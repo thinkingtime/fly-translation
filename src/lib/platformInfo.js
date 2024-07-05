@@ -2,14 +2,14 @@
 
 const platformInfo = {};
 
-twpConfig.onReady(function () {
+FTConfig.onReady(function () {
   if (chrome.tabs) {
-    twpConfig.set("originalUserAgent", navigator.userAgent);
+    FTConfig.set("originalUserAgent", navigator.userAgent);
   }
 
   let userAgent;
-  if (twpConfig.get("originalUserAgent")) {
-    userAgent = twpConfig.get("originalUserAgent");
+  if (FTConfig.get("originalUserAgent")) {
+    userAgent = FTConfig.get("originalUserAgent");
   } else {
     userAgent = navigator.userAgent;
   }

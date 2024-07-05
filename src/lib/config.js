@@ -1,6 +1,6 @@
 "use strict";
 
-const twpConfig = (function () {
+const FTConfig = (function () {
   /** @type {function[]} */
   const observers = [];
   const defaultTargetLanguages = ["en", "es", "de"];
@@ -80,14 +80,14 @@ const twpConfig = (function () {
     onReadyResolvePromise();
   }
 
-  const twpConfig = {};
+  const FTConfig = {};
 
   /**
    * create a listener to run when the settings are ready
    * @param {function} callback
    * @returns {Promise}
    */
-  twpConfig.onReady = function (callback = null) {
+  FTConfig.onReady = function (callback = null) {
     if (callback) {
       if (configIsReady) {
         callback();
@@ -101,23 +101,23 @@ const twpConfig = (function () {
   /**
    * get the value of a config
    * @example
-   * twpConfig.get("targetLanguages")
+   * FTConfig.get("targetLanguages")
    * // returns ["en", "es", "de"]
    * @param {DefaultConfigNames} name
    * @returns {*} value
    */
-  twpConfig.get = function (name) {
+  FTConfig.get = function (name) {
     return config[name];
   };
 
   /**
    * set the value of a config
    * @example
-   * twpConfig.set("showReleaseNotes", "no")
+   * FTConfig.set("showReleaseNotes", "no")
    * @param {DefaultConfigNames} name
    * @param {*} value
    */
-  twpConfig.set = function (name, value) {
+  FTConfig.set = function (name, value) {
     // @ts-ignore
     config[name] = value;
     const obj = {};
@@ -130,7 +130,7 @@ const twpConfig = (function () {
    * export config as JSON string
    * @returns {string} configJSON
    */
-  twpConfig.export = function () {
+  FTConfig.export = function () {
     const r = {
       timeStamp: Date.now(),
       version: chrome.runtime.getManifest().version,
@@ -138,7 +138,7 @@ const twpConfig = (function () {
 
     for (const key in defaultConfig) {
       //@ts-ignore
-      r[key] = toObjectOrArrayIfTypeIsMapOrSet(twpConfig.get(key));
+      r[key] = toObjectOrArrayIfTypeIsMapOrSet(FTConfig.get(key));
     }
 
     return JSON.stringify(r, null, 4);
@@ -148,7 +148,7 @@ const twpConfig = (function () {
    * import config and reload the extension
    * @param {string} configJSON
    */
-  twpConfig.import = function (configJSON) {
+  FTConfig.import = function (configJSON) {
     const newconfig = JSON.parse(configJSON);
 
     for (const key in defaultConfig) {
@@ -156,7 +156,7 @@ const twpConfig = (function () {
         let value = newconfig[key];
         value = fixObjectType(key, value);
         //@ts-ignore
-        twpConfig.set(key, value);
+        FTConfig.set(key, value);
       }
     }
 
@@ -178,7 +178,7 @@ const twpConfig = (function () {
   /**
    * restore the config to default and reaload the extension
    */
-  twpConfig.restoreToDefault = function () {
+  FTConfig.restoreToDefault = function () {
     // try to reset the keyboard shortcuts
     if (
       typeof browser !== "undefined" &&
@@ -202,20 +202,20 @@ const twpConfig = (function () {
       }
     }
 
-    twpConfig.import(JSON.stringify(defaultConfig));
+    FTConfig.import(JSON.stringify(defaultConfig));
   };
 
   /**
    * create a listener to run when a config changes
    * @param {function} callback
    */
-  twpConfig.onChanged = function (callback) {
+  FTConfig.onChanged = function (callback) {
     observers.push(callback);
   };
 
   // listen to storage changes
   chrome.storage.onChanged.addListener((changes, areaName) => {
-    twpConfig.onReady(function () {
+    FTConfig.onReady(function () {
       if (areaName === "local") {
         for (const name in changes) {
           const newValue = changes[name].newValue;
@@ -249,7 +249,7 @@ const twpConfig = (function () {
       // try to get the 3 target languages through the user defined languages in the browser configuration.
       for (let lang of acceptedLanguages) {
         if (config.targetLanguages.length >= 3) break;
-        lang = twpLang.fixTLanguageCode(lang);
+        lang = FTLang.fixTLanguageCode(lang);
         if (lang && config.targetLanguages.indexOf(lang) === -1) {
           config.targetLanguages.push(lang);
         }
@@ -300,20 +300,20 @@ const twpConfig = (function () {
 
       // fix targetLanguages
       config.targetLanguages = config.targetLanguages.map((lang) =>
-        twpLang.fixTLanguageCode(lang)
+        FTLang.fixTLanguageCode(lang)
       );
       // fix neverTranslateLangs
       config.neverTranslateLangs = config.neverTranslateLangs.map((lang) =>
-        twpLang.fixTLanguageCode(lang)
+        FTLang.fixTLanguageCode(lang)
       );
       // fix alwaysTranslateLangs
       config.alwaysTranslateLangs = config.alwaysTranslateLangs.map((lang) =>
-        twpLang.fixTLanguageCode(lang)
+        FTLang.fixTLanguageCode(lang)
       );
       // fix targetLanguage
-      config.targetLanguage = twpLang.fixTLanguageCode(config.targetLanguage);
+      config.targetLanguage = FTLang.fixTLanguageCode(config.targetLanguage);
       // fix targetLanguageTextTranslation
-      config.targetLanguageTextTranslation = twpLang.fixTLanguageCode(
+      config.targetLanguageTextTranslation = FTLang.fixTLanguageCode(
         config.targetLanguageTextTranslation
       );
 
@@ -336,7 +336,7 @@ const twpConfig = (function () {
             for (const result of results) {
               config.hotkeys[result.name] = result.shortcut;
             }
-            twpConfig.set("hotkeys", config.hotkeys);
+            FTConfig.set("hotkeys", config.hotkeys);
           } catch (e) {
             console.error(e);
           } finally {
@@ -350,76 +350,76 @@ const twpConfig = (function () {
   });
 
   function addInArray(configName, value) {
-    const array = twpConfig.get(configName);
+    const array = FTConfig.get(configName);
     if (array.indexOf(value) === -1) {
       array.push(value);
-      twpConfig.set(configName, array);
+      FTConfig.set(configName, array);
     }
   }
 
   function addInMap(configName, key, value) {
-    let map = twpConfig.get(configName);
+    let map = FTConfig.get(configName);
     if (typeof map.get(key) === "undefined") {
       map.set(key, value);
-      twpConfig.set(configName, map);
+      FTConfig.set(configName, map);
     }
   }
 
   function removeFromArray(configName, value) {
-    const array = twpConfig.get(configName);
+    const array = FTConfig.get(configName);
     const index = array.indexOf(value);
     if (index > -1) {
       array.splice(index, 1);
-      twpConfig.set(configName, array);
+      FTConfig.set(configName, array);
     }
   }
 
   function removeFromMap(configName, key) {
-    const map = twpConfig.get(configName);
+    const map = FTConfig.get(configName);
     if (typeof map.get(key) !== "undefined") {
       map.delete(key);
-      twpConfig.set(configName, map);
+      FTConfig.set(configName, map);
     }
   }
 
-  twpConfig.addSiteToTranslateWhenHovering = function (hostname) {
+  FTConfig.addSiteToTranslateWhenHovering = function (hostname) {
     addInArray("sitesToTranslateWhenHovering", hostname);
   };
 
-  twpConfig.removeSiteFromTranslateWhenHovering = function (hostname) {
+  FTConfig.removeSiteFromTranslateWhenHovering = function (hostname) {
     removeFromArray("sitesToTranslateWhenHovering", hostname);
   };
 
-  twpConfig.addLangToTranslateWhenHovering = function (lang) {
+  FTConfig.addLangToTranslateWhenHovering = function (lang) {
     addInArray("langsToTranslateWhenHovering", lang);
   };
 
-  twpConfig.removeLangFromTranslateWhenHovering = function (lang) {
+  FTConfig.removeLangFromTranslateWhenHovering = function (lang) {
     removeFromArray("langsToTranslateWhenHovering", lang);
   };
 
-  twpConfig.addSiteToAlwaysTranslate = function (hostname) {
+  FTConfig.addSiteToAlwaysTranslate = function (hostname) {
     addInArray("alwaysTranslateSites", hostname);
     removeFromArray("neverTranslateSites", hostname);
   };
-  twpConfig.removeSiteFromAlwaysTranslate = function (hostname) {
+  FTConfig.removeSiteFromAlwaysTranslate = function (hostname) {
     removeFromArray("alwaysTranslateSites", hostname);
   };
-  twpConfig.addSiteToNeverTranslate = function (hostname) {
+  FTConfig.addSiteToNeverTranslate = function (hostname) {
     addInArray("neverTranslateSites", hostname);
     removeFromArray("alwaysTranslateSites", hostname);
     removeFromArray("sitesToTranslateWhenHovering", hostname);
   };
-  twpConfig.addKeyWordTocustomDictionary = function (key, value) {
+  FTConfig.addKeyWordTocustomDictionary = function (key, value) {
     addInMap("customDictionary", key, value);
   };
-  twpConfig.removeSiteFromNeverTranslate = function (hostname) {
+  FTConfig.removeSiteFromNeverTranslate = function (hostname) {
     removeFromArray("neverTranslateSites", hostname);
   };
-  twpConfig.removeKeyWordFromcustomDictionary = function (keyWord) {
+  FTConfig.removeKeyWordFromcustomDictionary = function (keyWord) {
     removeFromMap("customDictionary", keyWord);
   };
-  twpConfig.addLangToAlwaysTranslate = function (lang, hostname) {
+  FTConfig.addLangToAlwaysTranslate = function (lang, hostname) {
     addInArray("alwaysTranslateLangs", lang);
     removeFromArray("neverTranslateLangs", lang);
 
@@ -427,10 +427,10 @@ const twpConfig = (function () {
       removeFromArray("neverTranslateSites", hostname);
     }
   };
-  twpConfig.removeLangFromAlwaysTranslate = function (lang) {
+  FTConfig.removeLangFromAlwaysTranslate = function (lang) {
     removeFromArray("alwaysTranslateLangs", lang);
   };
-  twpConfig.addLangToNeverTranslate = function (lang, hostname) {
+  FTConfig.addLangToNeverTranslate = function (lang, hostname) {
     addInArray("neverTranslateLangs", lang);
     removeFromArray("alwaysTranslateLangs", lang);
     removeFromArray("langsToTranslateWhenHovering", lang);
@@ -439,7 +439,7 @@ const twpConfig = (function () {
       removeFromArray("alwaysTranslateSites", hostname);
     }
   };
-  twpConfig.removeLangFromNeverTranslate = function (lang) {
+  FTConfig.removeLangFromNeverTranslate = function (lang) {
     removeFromArray("neverTranslateLangs", lang);
   };
 
@@ -451,8 +451,8 @@ const twpConfig = (function () {
    * @returns
    */
   function addTargetLanguage(lang) {
-    const targetLanguages = twpConfig.get("targetLanguages");
-    lang = twpLang.fixTLanguageCode(lang);
+    const targetLanguages = FTConfig.get("targetLanguages");
+    lang = FTLang.fixTLanguageCode(lang);
     if (!lang) return;
 
     const index = targetLanguages.indexOf(lang);
@@ -464,7 +464,7 @@ const twpConfig = (function () {
       targetLanguages.unshift(lang);
     }
 
-    twpConfig.set("targetLanguages", targetLanguages);
+    FTConfig.set("targetLanguages", targetLanguages);
   }
 
   /**
@@ -472,39 +472,39 @@ const twpConfig = (function () {
    *
    * if the lang in not in targetLanguages then call addTargetLanguage
    * @example
-   * twpConfig.setTargetLanguage("de",  true)
+   * FTConfig.setTargetLanguage("de",  true)
    * @param {string} lang - langCode
    * @param {boolean} forTextToo - also call setTargetLanguageTextTranslation
    * @returns
    */
-  twpConfig.setTargetLanguage = function (lang, forTextToo = false) {
-    const targetLanguages = twpConfig.get("targetLanguages");
-    lang = twpLang.fixTLanguageCode(lang);
+  FTConfig.setTargetLanguage = function (lang, forTextToo = false) {
+    const targetLanguages = FTConfig.get("targetLanguages");
+    lang = FTLang.fixTLanguageCode(lang);
     if (!lang) return;
 
     if (targetLanguages.indexOf(lang) === -1 || forTextToo) {
       addTargetLanguage(lang);
     }
 
-    twpConfig.set("targetLanguage", lang);
+    FTConfig.set("targetLanguage", lang);
 
     if (forTextToo) {
-      twpConfig.setTargetLanguageTextTranslation(lang);
+      FTConfig.setTargetLanguageTextTranslation(lang);
     }
   };
 
   /**
    * set lang as target language for text translation only (not page translation)
    * @example
-   * twpConfig.setTargetLanguage("de")
+   * FTConfig.setTargetLanguage("de")
    * @param {string} lang - langCode
    * @returns
    */
-  twpConfig.setTargetLanguageTextTranslation = function (lang) {
-    lang = twpLang.fixTLanguageCode(lang);
+  FTConfig.setTargetLanguageTextTranslation = function (lang) {
+    lang = FTLang.fixTLanguageCode(lang);
     if (!lang) return;
 
-    twpConfig.set("targetLanguageTextTranslation", lang);
+    FTConfig.set("targetLanguageTextTranslation", lang);
   };
 
   /**
@@ -552,25 +552,25 @@ const twpConfig = (function () {
    * Switch between page translation services that are enabled
    * @returns {string} newServiceName
    */
-  twpConfig.swapPageTranslationService = function () {
+  FTConfig.swapPageTranslationService = function () {
     const pageTranslationServices = ["google", "bing", "yandex"];
-    const pageEnabledServices = twpConfig
+    const pageEnabledServices = FTConfig
       .get("enabledServices")
       .filter((svName) => pageTranslationServices.includes(svName));
     const index = pageEnabledServices.indexOf(
-      twpConfig.get("pageTranslatorService")
+      FTConfig.get("pageTranslatorService")
     );
     if (index !== -1) {
       if (pageEnabledServices[index + 1]) {
-        twpConfig.set("pageTranslatorService", pageEnabledServices[index + 1]);
+        FTConfig.set("pageTranslatorService", pageEnabledServices[index + 1]);
       } else {
-        twpConfig.set("pageTranslatorService", pageEnabledServices[0]);
+        FTConfig.set("pageTranslatorService", pageEnabledServices[0]);
       }
     } else {
-      twpConfig.set("pageTranslatorService", pageEnabledServices[0]);
+      FTConfig.set("pageTranslatorService", pageEnabledServices[0]);
     }
-    return twpConfig.get("pageTranslatorService");
+    return FTConfig.get("pageTranslatorService");
   };
 
-  return twpConfig;
+  return FTConfig;
 })();

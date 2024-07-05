@@ -47,11 +47,11 @@ void (function () {
   }
 
   function injectInformation() {
-    if (document.getElementById("twp-info")) return;
+    if (document.getElementById("FT-info")) return;
     const style = document.createElement("style");
     style.textContent = `
-    /* TWP - Translate Web Pages */
-    #twp-info button {
+    /* FT - Fly Translation */
+    #FT-info button {
       color: black;
       background-color: white;
       border: 1px solid black;
@@ -62,17 +62,17 @@ void (function () {
       border-radius: 10px;
       transition: transform 0.1s;
     }
-    #twp-info button:hover {
+    #FT-info button:hover {
       transform: scale(1.1);
     }
-    #twp-info p {
+    #FT-info p {
       color: white;
     }
     `;
     document.head.appendChild(style);
 
     const info = document.createElement("div");
-    info.setAttribute("id", "twp-info");
+    info.setAttribute("id", "FT-info");
     info.style.cssText = `
       width: 100%;
       padding: 10px;
@@ -82,20 +82,20 @@ void (function () {
       padding: 7px;
     `;
     info.innerHTML = `
-      <p style="font-size: 20px; font-weight: bold;">TWP - Translate Web Pages</p>
+      <p style="font-size: 20px; font-weight: bold;">FT - Fly Translation</p>
       <p data-i18n="msgDeepLTabReasoOpened">This tab opened because you clicked to translate selected text using DeepL.</p>
       <button data-i18n="msgDontShowAgain">Don't show again</button>
     `;
     document.body.insertBefore(info, document.body.firstChild);
 
     info.querySelector("button").addEventListener("click", () => {
-      twpConfig.set("textTranslatorService", "google");
+      FTConfig.set("textTranslatorService", "google");
       setTimeout(() => window.close(), 500);
     });
 
-    twpConfig.onReady(async () => {
-      await twpI18n.updateUiMessages();
-      twpI18n.translateDocument(info);
+    FTConfig.onReady(async () => {
+      await FTI18n.updateUiMessages();
+      FTI18n.translateDocument(info);
     });
   }
 

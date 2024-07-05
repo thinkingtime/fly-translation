@@ -1,52 +1,52 @@
 
-# <img src="https://github.com/FilipePS/Traduzir-paginas-web/blob/master/src/icons/icon-128.png" height="50"> Translate Web Pages
+# <img src="https://github.com/thinkingtime/fly-translation/blob/master/src/icons/icon-128.png" height="50"> Fly Translation
 
 Translate your page in real time using Google or Yandex.
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FilipePS/Traduzir-paginas-web?label=latest%20version&sort=semver)](https://github.com/FilipePS/Traduzir-paginas-web/releases)
-[![GitHub release date](https://img.shields.io/github/release-date/FilipePS/Traduzir-paginas-web?labely)](https://github.com/FilipePS/Traduzir-paginas-web/latest)
-[![GitHub issues](https://img.shields.io/github/issues/FilipePS/Traduzir-paginas-web?color=red)](https://github.com/FilipePS/Traduzir-paginas-web/issues)
-[![GitHub license](https://img.shields.io/github/license/FilipePS/Traduzir-paginas-web?color=lightgrey)](https://github.com/FilipePS/Traduzir-paginas-web/blob/master/LICENSE)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/FilipePS/fly-translation?label=latest%20version&sort=semver)](https://github.com/thinkingtime/fly-translation/releases)
+[![GitHub release date](https://img.shields.io/github/release-date/FilipePS/fly-translation?labely)](https://github.com/thinkingtime/fly-translation/latest)
+[![GitHub issues](https://img.shields.io/github/issues/FilipePS/fly-translation?color=red)](https://github.com/thinkingtime/fly-translation/issues)
+[![GitHub license](https://img.shields.io/github/license/FilipePS/fly-translation?color=lightgrey)](https://github.com/thinkingtime/fly-translation/blob/master/LICENSE)
 
 ## Install
 
 ### Firefox
-- Desktop users, download from [Mozilla Addons](https://addons.mozilla.org/firefox/addon/traduzir-paginas-web/).
+- Desktop users, download from [Mozilla Addons](https://addons.mozilla.org/firefox/addon/fly-translation/).
 - Android users
   1. Install the latest version of _Firefox (v120+)_.
   2. Open the extension manager.
   3. Scroll down and click **Find more add-ons**.
-  4. On the add-ons website, search for **TWP**.
-  5. Install the **TWP - Translate For Mobile** extension.
+  4. On the add-ons website, search for **FT**.
+  5. Install the **FT - Translate For Mobile** extension.
 
 
 ### Vivaldi, Opera, Maxthon, Chromium and Yandex
-1. Download this CRX file [TWP_Chromium.crx](https://github.com/FilipePS/Traduzir-paginas-web/releases/download/v10.0.1.0/TWP_10.0.1.0_Chromium.crx)
+1. Download this CRX file [FT_Chromium.crx](https://github.com/thinkingtime/fly-translation/releases/download/v10.0.1.0/FT_10.0.1.0_Chromium.crx)
 2. Open your browser's extension manager, you can find it at this link: `chrome://extensions`
 3. Activate developer mode
 4. Reload the extension manager page to avoid errors
-5. Drag and drop the **TWP_Chromium.crx** file into the extension manager
+5. Drag and drop the **FT_Chromium.crx** file into the extension manager
 6. Note 1: In Opera, Maxthon and Yandex you don't need to enable developer mode
 7. Note 2: In Yandex you need to reactivate the extension every time you open the browser
 
 ### Chrome, Edge and Brave (With folder without auto update)
-1. Download and extract this ZIP file [TWP_Chromium.zip](https://github.com/FilipePS/Traduzir-paginas-web/releases/download/v10.0.1.0/TWP_10.0.1.0_Chromium.zip)
+1. Download and extract this ZIP file [FT_Chromium.zip](https://github.com/thinkingtime/fly-translation/releases/download/v10.0.1.0/FT_10.0.1.0_Chromium.zip)
 2. Open your browser's extension manager, you can find it at this link: `chrome://extensions`
 3. Activate developer mode
 4. Reload the extension manager page to avoid errors
-5. Drag and drop the **TWP_Chromium** folder into the extension manager
+5. Drag and drop the **FT_Chromium** folder into the extension manager
 
 ### Chrome, Edge and Brave (With CRX and auto update)
 - By default, these browsers block the installation of extensions outside the official extension store, however, changing a windows registry it is possible to reverse this, allowing the installation of certain extensions. If you want to do this, follow the tutorial below:
 
-1. Download this and run this file [twp-registry-install.reg](https://raw.githubusercontent.com/FilipePS/Traduzir-paginas-web/master/dist/chromium/twp-registry-install.reg). It edit the necessary windows registries
+1. Download this and run this file [FT-registry-install.reg](https://raw.githubusercontent.com/FilipePS/fly-translation/master/dist/chromium/FT-registry-install.reg). It edit the necessary windows registries
 2. Close your browser and reopen it
-3. Download this CRX file [TWP_Chromium.crx](https://github.com/FilipePS/Traduzir-paginas-web/releases/download/v10.0.1.0/TWP_10.0.1.0_Chromium.crx)
+3. Download this CRX file [FT_Chromium.crx](https://github.com/thinkingtime/fly-translation/releases/download/v10.0.1.0/FT_10.0.1.0_Chromium.crx)
 4. Open your browser's extension manager, you can find it at this link: `chrome://extensions`
 5. Activate developer mode
 6. Reload the extension manager page to avoid errors
-7. Drag and drop the **TWP_Chromium.crx** file into the extension manager
-8. Note: If you want to undo registry changes, download and run this [twp-registry-uninstall-self.reg](https://raw.githubusercontent.com/FilipePS/Traduzir-paginas-web/master/dist/chromium/twp-registry-uninstall-self.reg). If you want a deeper removal download and run this other file [twp-registry-uninstall-all.reg](https://raw.githubusercontent.com/FilipePS/Traduzir-paginas-web/master/dist/chromium/twp-registry-uninstall-all.reg)
+7. Drag and drop the **FT_Chromium.crx** file into the extension manager
+8. Note: If you want to undo registry changes, download and run this [FT-registry-uninstall-self.reg](https://raw.githubusercontent.com/FilipePS/fly-translation/master/dist/chromium/FT-registry-uninstall-self.reg). If you want a deeper removal download and run this other file [FT-registry-uninstall-all.reg](https://raw.githubusercontent.com/FilipePS/fly-translation/master/dist/chromium/FT-registry-uninstall-all.reg)
 
 ## Screenshots
 | Menu 1 | Menu 2 | Translated |
@@ -61,7 +61,7 @@ Translate your page in real time using Google or Yandex.
 
 To make a donation use [Patreon](https://www.patreon.com/filipeps).
 
-[<img src="https://github.com/FilipePS/Traduzir-paginas-web/blob/master/src/icons/patreon.png" alt="Patreon" height="50">](https://www.patreon.com/filipeps)
+[<img src="https://github.com/thinkingtime/fly-translation/blob/master/src/icons/patreon.png" alt="Patreon" height="50">](https://www.patreon.com/filipeps)
 
 ## FAQ
 
@@ -82,7 +82,7 @@ The pages are translated using the Google or Yandex translation engine (you choo
 
 **And how's my privacy?**
 
-[Privacy policy](https://addons.mozilla.org/addon/traduzir-paginas-web/privacy/): We do not collect any information. However, to translate, the contents of the web pages will be sent to Google or Yandex servers.
+[Privacy policy](https://addons.mozilla.org/addon/fly-translation/privacy/): We do not collect any information. However, to translate, the contents of the web pages will be sent to Google or Yandex servers.
 
 **Limitations**
 

@@ -481,7 +481,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       },
       "EXTENSION_VERSION": {
         "content": "#EXTENSION_VERSION#",
@@ -494,7 +494,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       }
     }
   },
@@ -529,7 +529,7 @@
     "message": "默认语言"
   },
   "msgExtUILanguage": {
-    "message": "扩展用户界面语言"
+    "message": "用户界面语言"
   },
   "msgSetDeepLAlert": {
     "message": "您确定要将翻译服务设置为 DeepL 吗？\n使用 DeepL 翻译文本时将会打开一个新选项卡，并在那里进行翻译。"

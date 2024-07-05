@@ -11,7 +11,7 @@ function getTabHostName() {
   );
 }
 
-Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
+Promise.all([FTConfig.onReady(), getTabHostName()]).then(function (_) {
   const tabHostName = _[1];
   if (platformInfo.isMobile.any) return;
 
@@ -23,20 +23,20 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
   let pageLanguageState = "original";
   let originalTabLanguage = "und";
-  let currentTargetLanguages = twpConfig.get("targetLanguages");
-  let currentTargetLanguage = twpConfig.get("targetLanguageTextTranslation");
+  let currentTargetLanguages = FTConfig.get("targetLanguages");
+  let currentTargetLanguage = FTConfig.get("targetLanguageTextTranslation");
   let currentTextTranslatorService =
-    twpConfig.get("textTranslatorService") === "deepl"
+    FTConfig.get("textTranslatorService") === "deepl"
       ? "google"
-      : twpConfig.get("textTranslatorService");
+      : FTConfig.get("textTranslatorService");
   let showTranslatedTextWhenHoveringThisSite =
-    twpConfig.get("sitesToTranslateWhenHovering").indexOf(tabHostName) !== -1;
+    FTConfig.get("sitesToTranslateWhenHovering").indexOf(tabHostName) !== -1;
   let showTranslatedTextWhenHoveringThisLang = false;
   let translateTextOverMouseWhenPressTwice =
-    twpConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
+    FTConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
   let fooCount = 0;
 
-  twpConfig.onChanged(function (name, newValue) {
+  FTConfig.onChanged(function (name, newValue) {
     switch (name) {
       case "textTranslatorService":
         currentTextTranslatorService =
@@ -60,7 +60,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
         break;
       case "translateTextOverMouseWhenPressTwice":
         translateTextOverMouseWhenPressTwice =
-          twpConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
+          FTConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
         updateEventListener();
         break;
     }
@@ -99,13 +99,13 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     "textarea",
     "svg",
     "template",
-    "math", "mjx-container", "tex-math" // https://github.com/FilipePS/Traduzir-paginas-web/issues/704
+    "math", "mjx-container", "tex-math" // https://github.com/thinkingtime/fly-translation/issues/704
   ];
 
-  if (twpConfig.get("translateTag_pre") !== "yes") {
+  if (FTConfig.get("translateTag_pre") !== "yes") {
     htmlTagsInlineIgnore.push("pre");
   }
-  twpConfig.onChanged((name, newvalue) => {
+  FTConfig.onChanged((name, newvalue) => {
     switch (name) {
       case "translateTag_pre":
         const index = htmlTagsInlineIgnore.indexOf("pre");
@@ -209,7 +209,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     if (index === -1) {
       return false;
     } else {
-      // https://github.com/FilipePS/Traduzir-paginas-web/issues/654
+      // https://github.com/thinkingtime/fly-translation/issues/654
       if (
         nodeName === "script" &&
         node.getAttribute("data-spotim-module") === "spotim-launcher" &&
@@ -326,7 +326,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
         }
 
         const eTextTranslated = shadowRoot.getElementById("eTextTranslated");
-        if (twpLang.isRtlLanguage(currentTargetLanguage)) {
+        if (FTLang.isRtlLanguage(currentTargetLanguage)) {
           eTextTranslated.setAttribute("dir", "rtl");
         } else {
           eTextTranslated.setAttribute("dir", "ltr");
@@ -528,7 +528,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       }
     }
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches) {
           enableDarkMode();
@@ -555,7 +555,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
     sGoogle.onclick = () => {
       currentTextTranslatorService = "google";
-      twpConfig.set("textTranslatorService", "google");
+      FTConfig.set("textTranslatorService", "google");
       translateThisNode(null, true);
 
       sGoogle.classList.remove("selected");
@@ -567,7 +567,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sYandex.onclick = () => {
       currentTextTranslatorService = "yandex";
-      twpConfig.set("textTranslatorService", "yandex");
+      FTConfig.set("textTranslatorService", "yandex");
       translateThisNode(null, true);
 
       sGoogle.classList.remove("selected");
@@ -579,7 +579,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sBing.onclick = () => {
       currentTextTranslatorService = "bing";
-      twpConfig.set("textTranslatorService", "bing");
+      FTConfig.set("textTranslatorService", "bing");
       translateThisNode(null, true);
 
       sGoogle.classList.remove("selected");
@@ -591,7 +591,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sDeepL.onclick = () => {
       currentTextTranslatorService = "deepl";
-      twpConfig.set("textTranslatorService", "deepl");
+      FTConfig.set("textTranslatorService", "deepl");
       translateThisNode(null, true);
 
       sGoogle.classList.remove("selected");
@@ -605,12 +605,12 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     const setTargetLanguage = shadowRoot.getElementById("setTargetLanguage");
     setTargetLanguage.onclick = (e) => {
       if (e.target.getAttribute("value")) {
-        const langCode = twpLang.fixTLanguageCode(
+        const langCode = FTLang.fixTLanguageCode(
           e.target.getAttribute("value")
         );
         if (langCode) {
           currentTargetLanguage = langCode;
-          twpConfig.setTargetLanguageTextTranslation(langCode);
+          FTConfig.setTargetLanguageTextTranslation(langCode);
           translateThisNode(null, true);
         }
 
@@ -624,8 +624,8 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
     const eListen = shadowRoot.getElementById("listen");
     eListen.onclick = () => {
-      const msgListen = twpI18n.getMessage("btnListen");
-      const msgStopListening = twpI18n.getMessage("btnStopListening");
+      const msgListen = FTI18n.getMessage("btnListen");
+      const msgStopListening = FTI18n.getMessage("btnStopListening");
 
       eListen.classList.remove("selected");
       eListen.setAttribute("title", msgStopListening);
@@ -644,7 +644,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
     document.body.appendChild(divElement);
 
-    twpI18n.translateDocument(shadowRoot);
+    FTI18n.translateDocument(shadowRoot);
 
     const targetLanguageButtons = shadowRoot.querySelectorAll(
       "#setTargetLanguage li"
@@ -658,7 +658,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       targetLanguageButtons[i].setAttribute("value", currentTargetLanguages[i]);
       targetLanguageButtons[i].setAttribute(
         "title",
-        twpLang.codeToLanguage(currentTargetLanguages[i])
+        FTLang.codeToLanguage(currentTargetLanguages[i])
       );
     }
 
@@ -774,7 +774,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   pageTranslator.onGetOriginalTabLanguage(function (tabLanguage) {
     originalTabLanguage = tabLanguage;
     showTranslatedTextWhenHoveringThisLang =
-      twpConfig
+      FTConfig
         .get("langsToTranslateWhenHovering")
         .indexOf(originalTabLanguage) !== -1;
     updateEventListener();

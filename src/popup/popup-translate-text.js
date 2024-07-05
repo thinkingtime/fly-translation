@@ -2,11 +2,11 @@
 
 let $ = document.querySelector.bind(document);
 
-twpConfig
+FTConfig
   .onReady()
-  .then(() => twpI18n.updateUiMessages())
+  .then(() => FTI18n.updateUiMessages())
   .then(() => {
-    twpI18n.translateDocument();
+    FTI18n.translateDocument();
 
     function backgroundTranslateSingleText(
       translationService,
@@ -31,9 +31,9 @@ twpConfig
       });
     }
 
-    let currentTargetLanguages = twpConfig.get("targetLanguages");
-    let currentTargetLanguage = twpConfig.get("targetLanguageTextTranslation");
-    let currentTextTranslatorService = twpConfig.get("textTranslatorService");
+    let currentTargetLanguages = FTConfig.get("targetLanguages");
+    let currentTargetLanguage = FTConfig.get("targetLanguageTextTranslation");
+    let currentTextTranslatorService = FTConfig.get("textTranslatorService");
 
     function disableDarkMode() {
       if (!document.getElementById("lightModeElement")) {
@@ -69,7 +69,7 @@ twpConfig
       }
     }
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches) {
           enableDarkMode();
@@ -95,7 +95,7 @@ twpConfig
           if (!result) return resolve({ lang: "und", isReliable: false });
 
           for (const langInfo of result.languages) {
-            const langCode = twpLang.fixTLanguageCode(langInfo.language);
+            const langCode = FTLang.fixTLanguageCode(langInfo.language);
             if (langCode) {
               return resolve({ lang: langCode, isReliable: result.isReliable });
             }
@@ -186,7 +186,7 @@ twpConfig
 
     sGoogle.onclick = () => {
       currentTextTranslatorService = "google";
-      twpConfig.set("textTranslatorService", "google");
+      FTConfig.set("textTranslatorService", "google");
       translateText();
 
       sGoogle.classList.remove("selected");
@@ -199,7 +199,7 @@ twpConfig
     };
     sYandex.onclick = () => {
       currentTextTranslatorService = "yandex";
-      twpConfig.set("textTranslatorService", "yandex");
+      FTConfig.set("textTranslatorService", "yandex");
       translateText();
 
       sGoogle.classList.remove("selected");
@@ -212,7 +212,7 @@ twpConfig
     };
     sBing.onclick = () => {
       currentTextTranslatorService = "bing";
-      twpConfig.set("textTranslatorService", "bing");
+      FTConfig.set("textTranslatorService", "bing");
       translateText();
 
       sGoogle.classList.remove("selected");
@@ -225,7 +225,7 @@ twpConfig
     };
     sDeepL.onclick = () => {
       currentTextTranslatorService = "deepl";
-      twpConfig.set("textTranslatorService", "deepl");
+      FTConfig.set("textTranslatorService", "deepl");
       translateText();
 
       sGoogle.classList.remove("selected");
@@ -238,7 +238,7 @@ twpConfig
     };
     sLibre.onclick = () => {
       currentTextTranslatorService = "libre";
-      twpConfig.set("textTranslatorService", "libre");
+      FTConfig.set("textTranslatorService", "libre");
       translateText();
 
       sGoogle.classList.remove("selected");
@@ -253,12 +253,12 @@ twpConfig
     const setTargetLanguage = document.getElementById("setTargetLanguage");
     setTargetLanguage.onclick = (e) => {
       if (e.target.getAttribute("value")) {
-        const langCode = twpLang.fixTLanguageCode(
+        const langCode = FTLang.fixTLanguageCode(
           e.target.getAttribute("value")
         );
         if (langCode) {
           currentTargetLanguage = langCode;
-          twpConfig.setTargetLanguageTextTranslation(langCode);
+          FTConfig.setTargetLanguageTextTranslation(langCode);
           translateText();
         }
 
@@ -271,8 +271,8 @@ twpConfig
     };
 
     function onListenClick(type, element, text, language) {
-      const msgListen = twpI18n.getMessage("btnListen");
-      const msgStopListening = twpI18n.getMessage("btnStopListening");
+      const msgListen = FTI18n.getMessage("btnListen");
+      const msgStopListening = FTI18n.getMessage("btnStopListening");
 
       eListenOriginal.classList.remove("selected");
       eListenTranslated.classList.remove("selected");
@@ -331,7 +331,7 @@ twpConfig
       targetLanguageButtons[i].setAttribute("value", currentTargetLanguages[i]);
       targetLanguageButtons[i].setAttribute(
         "title",
-        twpLang.codeToLanguage(currentTargetLanguages[i])
+        FTLang.codeToLanguage(currentTargetLanguages[i])
       );
     }
 
@@ -355,7 +355,7 @@ twpConfig
         break;
     }
 
-    const enabledServices = twpConfig.get("enabledServices");
+    const enabledServices = FTConfig.get("enabledServices");
     if (enabledServices.includes("google")) {
       sGoogle.removeAttribute("hidden");
     } else {
@@ -376,13 +376,13 @@ twpConfig
     } else {
       sDeepL.setAttribute("hidden", "");
     }
-    if (twpConfig.get("customServices").find((cs) => cs.name === "libre")) {
+    if (FTConfig.get("customServices").find((cs) => cs.name === "libre")) {
       sLibre.removeAttribute("hidden");
     } else {
       sLibre.setAttribute("hidden", "");
     }
 
-    twpConfig.onChanged((name, newvalue) => {
+    FTConfig.onChanged((name, newvalue) => {
       switch (name) {
         case "enabledServices": {
           const enabledServices = newvalue;
@@ -428,7 +428,7 @@ twpConfig
         currentTargetLanguage,
         eOrigText.textContent
       ).then((result) => {
-        if (twpLang.isRtlLanguage(currentTargetLanguage)) {
+        if (FTLang.isRtlLanguage(currentTargetLanguage)) {
           eTextTranslated.setAttribute("dir", "rtl");
         } else {
           eTextTranslated.setAttribute("dir", "ltr");

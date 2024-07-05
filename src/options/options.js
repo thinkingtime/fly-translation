@@ -7,7 +7,7 @@ setTimeout(() => {
       window.scrollTo(0, 0);
       document.getElementById("release_notes").innerHTML = responseText;
       document.getElementById("_msgHasBeenUpdated").textContent =
-        twpI18n.getMessage("msgHasBeenUpdated");
+        FTI18n.getMessage("msgHasBeenUpdated");
       document.getElementById("_msgHasBeenUpdated").innerHTML = document
         .getElementById("_msgHasBeenUpdated")
         .textContent.replace(
@@ -19,12 +19,12 @@ setTimeout(() => {
           "<b>" + chrome.runtime.getManifest().version + "</b>"
         );
       document.getElementById("_donationText").textContent =
-        twpI18n.getMessage("donationText");
+        FTI18n.getMessage("donationText");
       document.getElementById("_donatewithpaypal").textContent =
-        twpI18n.getMessage("donatewithpaypal");
+        FTI18n.getMessage("donatewithpaypal");
 
       document.getElementById("_donationRecipient").textContent =
-        twpI18n.getMessage("msgDonationRecipient");
+        FTI18n.getMessage("msgDonationRecipient");
       document.getElementById("_donationRecipient").innerHTML = document
         .getElementById("_donationRecipient")
         .textContent.replace(
@@ -61,22 +61,22 @@ setTimeout(() => {
 
 var $ = document.querySelector.bind(document);
 
-twpConfig
+FTConfig
   .onReady()
   .then(() => {
-    // https://github.com/FilipePS/Traduzir-paginas-web/issues/774
+    // https://github.com/thinkingtime/fly-translation/issues/774
     if (sessionStorage !== null) {
-      return twpI18n.updateUiMessages(
+      return FTI18n.updateUiMessages(
         sessionStorage.getItem("temporaryUiLanguage")
       );
     } else {
-      return twpI18n.updateUiMessages();
+      return FTI18n.updateUiMessages();
     }
   })
   .then(() => {
-    twpI18n.translateDocument();
+    FTI18n.translateDocument();
     document.querySelector("[data-i18n='msgDefaultLanguage']").textContent =
-      twpI18n.getMessage("msgDefaultLanguage") + " - Default language";
+      FTI18n.getMessage("msgDefaultLanguage") + " - Default language";
 
     let temporaryUiLanguage = null;
     if (sessionStorage !== null) {
@@ -137,11 +137,11 @@ twpConfig
 
       let text;
       if (hash === "#donation") {
-        text = twpI18n.getMessage("lblMakeDonation");
+        text = FTI18n.getMessage("lblMakeDonation");
       } else if (hash === "#release_notes") {
-        text = twpI18n.getMessage("lblReleaseNotes");
+        text = FTI18n.getMessage("lblReleaseNotes");
       } else {
-        text = twpI18n.getMessage("lblSettings");
+        text = FTI18n.getMessage("lblSettings");
       }
       $("#itemSelectedName").textContent = text;
 
@@ -173,7 +173,7 @@ twpConfig
     window.addEventListener("hashchange", hashchange);
 
     function fillLanguageList(select) {
-      let langs = twpLang.getLanguageList();
+      let langs = FTLang.getLanguageList();
 
       const langsSorted = [];
 
@@ -205,7 +205,7 @@ twpConfig
     fillLanguageList($("#addLangToTranslateWhenHovering"));
 
     function updateDarkMode() {
-      switch (twpConfig.get("darkMode")) {
+      switch (FTConfig.get("darkMode")) {
         case "auto":
           if (matchMedia("(prefers-color-scheme: dark)").matches) {
             enableDarkMode();
@@ -227,10 +227,10 @@ twpConfig
 
     // target languages
     $("#selectUiLanguage").value =
-      temporaryUiLanguage || twpConfig.get("uiLanguage");
+      temporaryUiLanguage || FTConfig.get("uiLanguage");
     $("#selectUiLanguage").onchange = (e) => {
       if (e.target.value === "default") {
-        twpConfig.set("uiLanguage", "default");
+        FTConfig.set("uiLanguage", "default");
       } else {
         if (sessionStorage !== null) {
           sessionStorage.setItem("temporaryUiLanguage", e.target.value);
@@ -242,43 +242,43 @@ twpConfig
     };
     $("#btnApplyUiLanguage").onclick = () => {
       if (temporaryUiLanguage) {
-        twpConfig.set(
+        FTConfig.set(
           "uiLanguage",
           temporaryUiLanguage === "default"
             ? "default"
-            : twpLang.fixUILanguageCode(temporaryUiLanguage)
+            : FTLang.fixUILanguageCode(temporaryUiLanguage)
         );
         // timeout prevents: TypeError: NetworkError when attempting to fetch resource.
         setTimeout(() => location.reload(), 100);
       } else if (sessionStorage === null) {
         const lang = $("#selectUiLanguage").value;
-        twpConfig.set(
+        FTConfig.set(
           "uiLanguage",
-          lang === "default" ? "default" : twpLang.fixUILanguageCode(lang)
+          lang === "default" ? "default" : FTLang.fixUILanguageCode(lang)
         );
         // timeout prevents: TypeError: NetworkError when attempting to fetch resource.
         setTimeout(() => location.reload(), 100);
       }
     };
 
-    const targetLanguage = twpConfig.get("targetLanguage");
+    const targetLanguage = FTConfig.get("targetLanguage");
     $("#selectTargetLanguage").value = targetLanguage;
     $("#selectTargetLanguage").onchange = (e) => {
-      twpConfig.setTargetLanguage(e.target.value);
+      FTConfig.setTargetLanguage(e.target.value);
       location.reload();
     };
 
-    const targetLanguageTextTranslation = twpConfig.get(
+    const targetLanguageTextTranslation = FTConfig.get(
       "targetLanguageTextTranslation"
     );
     $("#selectTargetLanguageForText").value = targetLanguageTextTranslation;
     $("#selectTargetLanguageForText").onchange = (e) => {
-      twpConfig.setTargetLanguage(e.target.value, true);
-      twpConfig.setTargetLanguage(targetLanguage, false);
+      FTConfig.setTargetLanguage(e.target.value, true);
+      FTConfig.setTargetLanguage(targetLanguage, false);
       location.reload();
     };
 
-    const targetLanguages = twpConfig.get("targetLanguages");
+    const targetLanguages = FTConfig.get("targetLanguages");
 
     $("#favoriteLanguage1").value = targetLanguages[0];
     $("#favoriteLanguage2").value = targetLanguages[1];
@@ -286,48 +286,48 @@ twpConfig
 
     $("#favoriteLanguage1").onchange = (e) => {
       targetLanguages[0] = e.target.value;
-      twpConfig.set("targetLanguages", targetLanguages);
-      if (targetLanguages.indexOf(twpConfig.get("targetLanguage")) == -1) {
-        twpConfig.set("targetLanguage", targetLanguages[0]);
+      FTConfig.set("targetLanguages", targetLanguages);
+      if (targetLanguages.indexOf(FTConfig.get("targetLanguage")) == -1) {
+        FTConfig.set("targetLanguage", targetLanguages[0]);
       }
       if (
         targetLanguages.indexOf(
-          twpConfig.get("targetLanguageTextTranslation")
+          FTConfig.get("targetLanguageTextTranslation")
         ) == -1
       ) {
-        twpConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
+        FTConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
       }
       location.reload();
     };
 
     $("#favoriteLanguage2").onchange = (e) => {
       targetLanguages[1] = e.target.value;
-      twpConfig.set("targetLanguages", targetLanguages);
-      if (targetLanguages.indexOf(twpConfig.get("targetLanguage")) == -1) {
-        twpConfig.set("targetLanguage", targetLanguages[0]);
+      FTConfig.set("targetLanguages", targetLanguages);
+      if (targetLanguages.indexOf(FTConfig.get("targetLanguage")) == -1) {
+        FTConfig.set("targetLanguage", targetLanguages[0]);
       }
       if (
         targetLanguages.indexOf(
-          twpConfig.get("targetLanguageTextTranslation")
+          FTConfig.get("targetLanguageTextTranslation")
         ) == -1
       ) {
-        twpConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
+        FTConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
       }
       location.reload();
     };
 
     $("#favoriteLanguage3").onchange = (e) => {
       targetLanguages[2] = e.target.value;
-      twpConfig.set("targetLanguages", targetLanguages);
-      if (targetLanguages.indexOf(twpConfig.get("targetLanguage")) == -1) {
-        twpConfig.set("targetLanguage", targetLanguages[0]);
+      FTConfig.set("targetLanguages", targetLanguages);
+      if (targetLanguages.indexOf(FTConfig.get("targetLanguage")) == -1) {
+        FTConfig.set("targetLanguage", targetLanguages[0]);
       }
       if (
         targetLanguages.indexOf(
-          twpConfig.get("targetLanguageTextTranslation")
+          FTConfig.get("targetLanguageTextTranslation")
         ) == -1
       ) {
-        twpConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
+        FTConfig.set("targetLanguageTextTranslation", targetLanguages[0]);
       }
       location.reload();
     };
@@ -347,7 +347,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeLangFromNeverTranslate(langCode);
+        FTConfig.removeLangFromNeverTranslate(langCode);
         li.remove();
       };
 
@@ -356,21 +356,21 @@ twpConfig
       return li;
     }
 
-    const neverTranslateLangs = twpConfig.get("neverTranslateLangs");
+    const neverTranslateLangs = FTConfig.get("neverTranslateLangs");
     neverTranslateLangs.sort((a, b) => a.localeCompare(b));
     neverTranslateLangs.forEach((langCode) => {
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToNeverTranslateLangsList(langCode, langName);
       $("#neverTranslateLangs").appendChild(li);
     });
 
     $("#addToNeverTranslateLangs").onchange = (e) => {
       const langCode = e.target.value;
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToNeverTranslateLangsList(langCode, langName);
       $("#neverTranslateLangs").appendChild(li);
 
-      twpConfig.addLangToNeverTranslate(langCode);
+      FTConfig.addLangToNeverTranslate(langCode);
     };
 
     // Always translate these languages
@@ -388,7 +388,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeLangFromAlwaysTranslate(langCode);
+        FTConfig.removeLangFromAlwaysTranslate(langCode);
         li.remove();
       };
 
@@ -397,21 +397,21 @@ twpConfig
       return li;
     }
 
-    const alwaysTranslateLangs = twpConfig.get("alwaysTranslateLangs");
+    const alwaysTranslateLangs = FTConfig.get("alwaysTranslateLangs");
     alwaysTranslateLangs.sort((a, b) => a.localeCompare(b));
     alwaysTranslateLangs.forEach((langCode) => {
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToAlwaysTranslateLangsList(langCode, langName);
       $("#alwaysTranslateLangs").appendChild(li);
     });
 
     $("#addToAlwaysTranslateLangs").onchange = (e) => {
       const langCode = e.target.value;
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToAlwaysTranslateLangsList(langCode, langName);
       $("#alwaysTranslateLangs").appendChild(li);
 
-      twpConfig.addLangToAlwaysTranslate(langCode);
+      FTConfig.addLangToAlwaysTranslate(langCode);
     };
 
     // langsToTranslateWhenHovering
@@ -429,7 +429,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeLangFromTranslateWhenHovering(langCode);
+        FTConfig.removeLangFromTranslateWhenHovering(langCode);
         li.remove();
       };
 
@@ -438,12 +438,12 @@ twpConfig
       return li;
     }
 
-    const langsToTranslateWhenHovering = twpConfig.get(
+    const langsToTranslateWhenHovering = FTConfig.get(
       "langsToTranslateWhenHovering"
     );
     langsToTranslateWhenHovering.sort((a, b) => a.localeCompare(b));
     langsToTranslateWhenHovering.forEach((langCode) => {
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToLangsToTranslateWhenHoveringList(
         langCode,
         langName
@@ -453,14 +453,14 @@ twpConfig
 
     $("#addLangToTranslateWhenHovering").onchange = (e) => {
       const langCode = e.target.value;
-      const langName = twpLang.codeToLanguage(langCode);
+      const langName = FTLang.codeToLanguage(langCode);
       const li = createNodeToLangsToTranslateWhenHoveringList(
         langCode,
         langName
       );
       $("#langsToTranslateWhenHovering").appendChild(li);
 
-      twpConfig.addLangToTranslateWhenHovering(langCode);
+      FTConfig.addLangToTranslateWhenHovering(langCode);
     };
 
     // Always translate these Sites
@@ -478,7 +478,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeSiteFromAlwaysTranslate(hostname);
+        FTConfig.removeSiteFromAlwaysTranslate(hostname);
         li.remove();
       };
 
@@ -487,7 +487,7 @@ twpConfig
       return li;
     }
 
-    const alwaysTranslateSites = twpConfig.get("alwaysTranslateSites");
+    const alwaysTranslateSites = FTConfig.get("alwaysTranslateSites");
     alwaysTranslateSites.sort((a, b) => a.localeCompare(b));
     alwaysTranslateSites.forEach((hostname) => {
       const li = createNodeToAlwaysTranslateSitesList(hostname);
@@ -501,7 +501,7 @@ twpConfig
       const li = createNodeToAlwaysTranslateSitesList(hostname);
       $("#alwaysTranslateSites").appendChild(li);
 
-      twpConfig.addSiteToAlwaysTranslate(hostname);
+      FTConfig.addSiteToAlwaysTranslate(hostname);
     };
 
     // Never translate these Sites
@@ -519,7 +519,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeSiteFromNeverTranslate(hostname);
+        FTConfig.removeSiteFromNeverTranslate(hostname);
         li.remove();
       };
 
@@ -528,7 +528,7 @@ twpConfig
       return li;
     }
 
-    const neverTranslateSites = twpConfig.get("neverTranslateSites");
+    const neverTranslateSites = FTConfig.get("neverTranslateSites");
     neverTranslateSites.sort((a, b) => a.localeCompare(b));
     neverTranslateSites.forEach((hostname) => {
       const li = createNodeToNeverTranslateSitesList(hostname);
@@ -542,7 +542,7 @@ twpConfig
       const li = createNodeToNeverTranslateSitesList(hostname);
       $("#neverTranslateSites").appendChild(li);
 
-      twpConfig.addSiteToNeverTranslate(hostname);
+      FTConfig.addSiteToNeverTranslate(hostname);
     };
 
     function createcustomDictionary(keyWord, customValue) {
@@ -560,14 +560,14 @@ twpConfig
 
       close.onclick = (e) => {
         e.preventDefault();
-        twpConfig.removeKeyWordFromcustomDictionary(keyWord);
+        FTConfig.removeKeyWordFromcustomDictionary(keyWord);
         li.remove();
       };
       li.appendChild(close);
       return li;
     }
 
-    let customDictionary = twpConfig.get("customDictionary");
+    let customDictionary = FTConfig.get("customDictionary");
     customDictionary = new Map(
       [...customDictionary.entries()].sort((a, b) =>
         String(a[0]).localeCompare(String(b[0]))
@@ -590,7 +590,7 @@ twpConfig
       customValue = customValue.trim();
       const li = createcustomDictionary(keyWord, customValue);
       $("#customDictionary").appendChild(li);
-      twpConfig.addKeyWordTocustomDictionary(keyWord, customValue);
+      FTConfig.addKeyWordTocustomDictionary(keyWord, customValue);
     };
 
     // sitesToTranslateWhenHovering
@@ -608,7 +608,7 @@ twpConfig
       close.onclick = (e) => {
         e.preventDefault();
 
-        twpConfig.removeSiteFromTranslateWhenHovering(hostname);
+        FTConfig.removeSiteFromTranslateWhenHovering(hostname);
         li.remove();
       };
 
@@ -617,7 +617,7 @@ twpConfig
       return li;
     }
 
-    const sitesToTranslateWhenHovering = twpConfig.get(
+    const sitesToTranslateWhenHovering = FTConfig.get(
       "sitesToTranslateWhenHovering"
     );
     sitesToTranslateWhenHovering.sort((a, b) => a.localeCompare(b));
@@ -633,67 +633,67 @@ twpConfig
       const li = createNodeToSitesToTranslateWhenHoveringList(hostname);
       $("#sitesToTranslateWhenHovering").appendChild(li);
 
-      twpConfig.addSiteToTranslateWhenHovering(hostname);
+      FTConfig.addSiteToTranslateWhenHovering(hostname);
     };
 
     // translations options
     $("#pageTranslatorService").onchange = (e) => {
-      twpConfig.set("pageTranslatorService", e.target.value);
+      FTConfig.set("pageTranslatorService", e.target.value);
     };
-    $("#pageTranslatorService").value = twpConfig.get("pageTranslatorService");
+    $("#pageTranslatorService").value = FTConfig.get("pageTranslatorService");
 
     $("#textTranslatorService").onchange = (e) => {
-      twpConfig.set("textTranslatorService", e.target.value);
+      FTConfig.set("textTranslatorService", e.target.value);
     };
-    $("#textTranslatorService").value = twpConfig.get("textTranslatorService");
+    $("#textTranslatorService").value = FTConfig.get("textTranslatorService");
 
     $("#textToSpeechService").onchange = (e) => {
-      twpConfig.set("textToSpeechService", e.target.value);
+      FTConfig.set("textToSpeechService", e.target.value);
     };
-    $("#textToSpeechService").value = twpConfig.get("textToSpeechService");
+    $("#textToSpeechService").value = FTConfig.get("textToSpeechService");
 
     $("#ttsSpeed").oninput = (e) => {
-      twpConfig.set("ttsSpeed", e.target.value);
+      FTConfig.set("ttsSpeed", e.target.value);
       $("#displayTtsSpeed").textContent = e.target.value;
     };
-    $("#ttsSpeed").value = twpConfig.get("ttsSpeed");
-    $("#displayTtsSpeed").textContent = twpConfig.get("ttsSpeed");
+    $("#ttsSpeed").value = FTConfig.get("ttsSpeed");
+    $("#displayTtsSpeed").textContent = FTConfig.get("ttsSpeed");
 
     $("#ttsVolume").oninput = (e) => {
-      twpConfig.set("ttsVolume", e.target.value);
+      FTConfig.set("ttsVolume", e.target.value);
       $("#displayTtsVolume").textContent = e.target.value;
     };
-    $("#ttsVolume").value = twpConfig.get("ttsVolume");
-    $("#displayTtsVolume").textContent = twpConfig.get("ttsVolume");
+    $("#ttsVolume").value = FTConfig.get("ttsVolume");
+    $("#displayTtsVolume").textContent = FTConfig.get("ttsVolume");
 
     $("#showOriginalTextWhenHovering").onchange = (e) => {
-      twpConfig.set("showOriginalTextWhenHovering", e.target.value);
+      FTConfig.set("showOriginalTextWhenHovering", e.target.value);
     };
-    $("#showOriginalTextWhenHovering").value = twpConfig.get(
+    $("#showOriginalTextWhenHovering").value = FTConfig.get(
       "showOriginalTextWhenHovering"
     );
 
     $("#translateTag_pre").onchange = (e) => {
-      twpConfig.set("translateTag_pre", e.target.value);
+      FTConfig.set("translateTag_pre", e.target.value);
     };
-    $("#translateTag_pre").value = twpConfig.get("translateTag_pre");
+    $("#translateTag_pre").value = FTConfig.get("translateTag_pre");
 
     $("#enableIframePageTranslation").onchange = (e) => {
-      twpConfig.set("enableIframePageTranslation", e.target.value);
+      FTConfig.set("enableIframePageTranslation", e.target.value);
     };
-    $("#enableIframePageTranslation").value = twpConfig.get(
+    $("#enableIframePageTranslation").value = FTConfig.get(
       "enableIframePageTranslation"
     );
 
     $("#dontSortResults").onchange = (e) => {
-      twpConfig.set("dontSortResults", e.target.value);
+      FTConfig.set("dontSortResults", e.target.value);
     };
-    $("#dontSortResults").value = twpConfig.get("dontSortResults");
+    $("#dontSortResults").value = FTConfig.get("dontSortResults");
 
     $("#translateDynamicallyCreatedContent").onchange = (e) => {
-      twpConfig.set("translateDynamicallyCreatedContent", e.target.value);
+      FTConfig.set("translateDynamicallyCreatedContent", e.target.value);
     };
-    $("#translateDynamicallyCreatedContent").value = twpConfig.get(
+    $("#translateDynamicallyCreatedContent").value = FTConfig.get(
       "translateDynamicallyCreatedContent"
     );
 
@@ -705,21 +705,21 @@ twpConfig
           },
           (granted) => {
             if (granted) {
-              twpConfig.set("autoTranslateWhenClickingALink", "yes");
+              FTConfig.set("autoTranslateWhenClickingALink", "yes");
             } else {
-              twpConfig.set("autoTranslateWhenClickingALink", "no");
+              FTConfig.set("autoTranslateWhenClickingALink", "no");
               e.target.value = "no";
             }
           }
         );
       } else {
-        twpConfig.set("autoTranslateWhenClickingALink", "no");
+        FTConfig.set("autoTranslateWhenClickingALink", "no");
         chrome.permissions.remove({
           permissions: ["webNavigation"],
         });
       }
     };
-    $("#autoTranslateWhenClickingALink").value = twpConfig.get(
+    $("#autoTranslateWhenClickingALink").value = FTConfig.get(
       "autoTranslateWhenClickingALink"
     );
 
@@ -740,80 +740,80 @@ twpConfig
     }
 
     $("#showTranslateSelectedButton").onchange = (e) => {
-      twpConfig.set("showTranslateSelectedButton", e.target.value);
+      FTConfig.set("showTranslateSelectedButton", e.target.value);
       enableOrDisableTranslateSelectedAdvancedOptions(e.target.value);
     };
-    $("#showTranslateSelectedButton").value = twpConfig.get(
+    $("#showTranslateSelectedButton").value = FTConfig.get(
       "showTranslateSelectedButton"
     );
     enableOrDisableTranslateSelectedAdvancedOptions(
-      twpConfig.get("showTranslateSelectedButton")
+      FTConfig.get("showTranslateSelectedButton")
     );
 
     $("#dontShowIfIsNotValidText").onchange = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "dontShowIfIsNotValidText",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#dontShowIfIsNotValidText").checked =
-      twpConfig.get("dontShowIfIsNotValidText") === "yes" ? true : false;
+      FTConfig.get("dontShowIfIsNotValidText") === "yes" ? true : false;
 
     $("#dontShowIfPageLangIsTargetLang").onchange = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "dontShowIfPageLangIsTargetLang",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#dontShowIfPageLangIsTargetLang").checked =
-      twpConfig.get("dontShowIfPageLangIsTargetLang") === "yes" ? true : false;
+      FTConfig.get("dontShowIfPageLangIsTargetLang") === "yes" ? true : false;
 
     $("#dontShowIfPageLangIsUnknown").onchange = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "dontShowIfPageLangIsUnknown",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#dontShowIfPageLangIsUnknown").checked =
-      twpConfig.get("dontShowIfPageLangIsUnknown") === "yes" ? true : false;
+      FTConfig.get("dontShowIfPageLangIsUnknown") === "yes" ? true : false;
 
     $("#dontShowIfSelectedTextIsTargetLang").onchange = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "dontShowIfSelectedTextIsTargetLang",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#dontShowIfSelectedTextIsTargetLang").checked =
-      twpConfig.get("dontShowIfSelectedTextIsTargetLang") === "yes"
+      FTConfig.get("dontShowIfSelectedTextIsTargetLang") === "yes"
         ? true
         : false;
 
     $("#dontShowIfSelectedTextIsUnknown").onchange = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "dontShowIfSelectedTextIsUnknown",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#dontShowIfSelectedTextIsUnknown").checked =
-      twpConfig.get("dontShowIfSelectedTextIsUnknown") === "yes" ? true : false;
+      FTConfig.get("dontShowIfSelectedTextIsUnknown") === "yes" ? true : false;
 
     // style options
     $("#useOldPopup").onchange = (e) => {
-      twpConfig.set("useOldPopup", e.target.value);
+      FTConfig.set("useOldPopup", e.target.value);
       updateDarkMode();
     };
-    $("#useOldPopup").value = twpConfig.get("useOldPopup");
+    $("#useOldPopup").value = FTConfig.get("useOldPopup");
 
     $("#darkMode").onchange = (e) => {
-      twpConfig.set("darkMode", e.target.value);
+      FTConfig.set("darkMode", e.target.value);
       updateDarkMode();
     };
-    $("#darkMode").value = twpConfig.get("darkMode");
+    $("#darkMode").value = FTConfig.get("darkMode");
 
     $("#popupBlueWhenSiteIsTranslated").onchange = (e) => {
-      twpConfig.set("popupBlueWhenSiteIsTranslated", e.target.value);
+      FTConfig.set("popupBlueWhenSiteIsTranslated", e.target.value);
     };
-    $("#popupBlueWhenSiteIsTranslated").value = twpConfig.get(
+    $("#popupBlueWhenSiteIsTranslated").value = FTConfig.get(
       "popupBlueWhenSiteIsTranslated"
     );
 
@@ -838,22 +838,22 @@ twpConfig
     };
 
     $("#translateSelectedWhenPressTwice").onclick = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "translateSelectedWhenPressTwice",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#translateSelectedWhenPressTwice").checked =
-      twpConfig.get("translateSelectedWhenPressTwice") === "yes";
+      FTConfig.get("translateSelectedWhenPressTwice") === "yes";
 
     $("#translateTextOverMouseWhenPressTwice").onclick = (e) => {
-      twpConfig.set(
+      FTConfig.set(
         "translateTextOverMouseWhenPressTwice",
         e.target.checked ? "yes" : "no"
       );
     };
     $("#translateTextOverMouseWhenPressTwice").checked =
-      twpConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
+      FTConfig.get("translateTextOverMouseWhenPressTwice") === "yes";
 
     const defaultShortcuts = {};
     for (const name of Object.keys(
@@ -905,7 +905,7 @@ twpConfig
 
       const info = descriptions.find((d) => d.key === hotkeyname);
       if (!info) return "";
-      let desc = twpI18n.getMessage(info.i18n);
+      let desc = FTI18n.getMessage(info.i18n);
       if (hotkeyname.startsWith("hotkey-translate-page-")) {
         desc += " " + hotkeyname.slice(-1);
       }
@@ -919,7 +919,7 @@ twpConfig
       description = translateHotkeysDescription(hotkeyname) || description;
 
       const enterShortcut =
-        twpI18n.getMessage("enterShortcut") || "Enter shortcut";
+        FTI18n.getMessage("enterShortcut") || "Enter shortcut";
 
       function escapeHtml(unsafe) {
         return unsafe
@@ -952,7 +952,7 @@ twpConfig
       const removeKey = li.querySelector(`[name="removeKey"]`);
       const resetKey = li.querySelector(`[name="resetKey"]`);
 
-      input.value = twpConfig.get("hotkeys")[hotkeyname];
+      input.value = FTConfig.get("hotkeys")[hotkeyname];
       if (input.value) {
         resetKey.style.display = "none";
       } else {
@@ -960,7 +960,7 @@ twpConfig
       }
 
       function setError(errorname) {
-        const text = twpI18n.getMessage("hotkeyError_" + errorname);
+        const text = FTI18n.getMessage("hotkeyError_" + errorname);
         switch (errorname) {
           case "ctrlOrAlt":
             error.textContent = text ? text : "Include Ctrl or Alt";
@@ -998,9 +998,9 @@ twpConfig
       }
 
       function setShortcut(name, keystring) {
-        const hotkeys = twpConfig.get("hotkeys");
+        const hotkeys = FTConfig.get("hotkeys");
         hotkeys[hotkeyname] = keystring;
-        twpConfig.set("hotkeys", hotkeys);
+        FTConfig.set("hotkeys", hotkeys);
         browser.commands.update({
           name: name,
           shortcut: keystring,
@@ -1051,7 +1051,7 @@ twpConfig
       };
 
       input.onblur = (e) => {
-        input.value = twpConfig.get("hotkeys")[hotkeyname];
+        input.value = FTConfig.get("hotkeys")[hotkeyname];
         setError("");
       };
 
@@ -1092,9 +1092,9 @@ twpConfig
 
     // privacy options
     $("#useAlternativeService").oninput = (e) => {
-      twpConfig.set("useAlternativeService", e.target.value);
+      FTConfig.set("useAlternativeService", e.target.value);
     };
-    $("#useAlternativeService").value = twpConfig.get("useAlternativeService");
+    $("#useAlternativeService").value = FTConfig.get("useAlternativeService");
 
     {
       if (platformInfo.isMobile.any) {
@@ -1154,14 +1154,14 @@ twpConfig
           });
 
           if (
-            !enabledServices.includes(twpConfig.get("textTranslatorService"))
+            !enabledServices.includes(FTConfig.get("textTranslatorService"))
           ) {
-            twpConfig.set("textTranslatorService", enabledServices[0]);
+            FTConfig.set("textTranslatorService", enabledServices[0]);
           }
           if (
-            !enabledServices.includes(twpConfig.get("pageTranslatorService"))
+            !enabledServices.includes(FTConfig.get("pageTranslatorService"))
           ) {
-            twpConfig.set("pageTranslatorService", enabledServices[0]);
+            FTConfig.set("pageTranslatorService", enabledServices[0]);
           }
 
           const pageTranslationServices = ["google", "bing", "yandex"];
@@ -1171,33 +1171,33 @@ twpConfig
               serviceNames: pageTranslationServices.filter(
                 (svName) => !enabledServices.includes(svName)
               ),
-              newServiceName: twpConfig.get("pageTranslatorService"),
+              newServiceName: FTConfig.get("pageTranslatorService"),
             },
             checkedLastError
           );
 
-          twpConfig.set("enabledServices", enabledServices);
+          FTConfig.set("enabledServices", enabledServices);
 
-          $("#pageTranslatorService").value = twpConfig.get(
+          $("#pageTranslatorService").value = FTConfig.get(
             "pageTranslatorService"
           );
-          $("#textTranslatorService").value = twpConfig.get(
+          $("#textTranslatorService").value = FTConfig.get(
             "textTranslatorService"
           );
           updateServiceSelector(enabledServices);
         };
         $(svInfo.selector).checked =
-          twpConfig.get("enabledServices").indexOf(svInfo.svName) === -1
+          FTConfig.get("enabledServices").indexOf(svInfo.svName) === -1
             ? false
             : true;
 
-        updateServiceSelector(twpConfig.get("enabledServices"));
+        updateServiceSelector(FTConfig.get("enabledServices"));
       });
     }
 
     // storage options
     $("#deleteTranslationCache").onclick = (e) => {
-      if (confirm(twpI18n.getMessage("doYouWantToDeleteTranslationCache"))) {
+      if (confirm(FTI18n.getMessage("doYouWantToDeleteTranslationCache"))) {
         chrome.runtime.sendMessage(
           {
             action: "deleteTranslationCache",
@@ -1209,12 +1209,12 @@ twpConfig
     };
 
     $("#enableDiskCache").oninput = (e) => {
-      twpConfig.set("enableDiskCache", $("#enableDiskCache").value);
+      FTConfig.set("enableDiskCache", $("#enableDiskCache").value);
     };
-    $("#enableDiskCache").value = twpConfig.get("enableDiskCache");
+    $("#enableDiskCache").value = FTConfig.get("enableDiskCache");
 
     $("#backupToFile").onclick = (e) => {
-      const configJSON = twpConfig.export();
+      const configJSON = FTConfig.export();
 
       const element = document.createElement("a");
       element.setAttribute(
@@ -1223,7 +1223,7 @@ twpConfig
       );
       element.setAttribute(
         "download",
-        "twp-backup_" +
+        "FT-backup_" +
           new Date()
             .toISOString()
             .replace(/T/, "_")
@@ -1253,11 +1253,11 @@ twpConfig
         const reader = new FileReader();
         reader.onload = function () {
           try {
-            if (confirm(twpI18n.getMessage("doYouWantOverwriteAllSettings"))) {
-              twpConfig.import(reader.result);
+            if (confirm(FTI18n.getMessage("doYouWantOverwriteAllSettings"))) {
+              FTConfig.import(reader.result);
             }
           } catch (e) {
-            alert(twpI18n.getMessage("fileIsCorrupted"));
+            alert(FTI18n.getMessage("fileIsCorrupted"));
             console.error(e);
           }
         };
@@ -1270,47 +1270,47 @@ twpConfig
       document.body.removeChild(element);
     };
     $("#resetToDefault").onclick = (e) => {
-      if (confirm(twpI18n.getMessage("doYouWantRestoreSettings"))) {
-        twpConfig.restoreToDefault();
+      if (confirm(FTI18n.getMessage("doYouWantRestoreSettings"))) {
+        FTConfig.restoreToDefault();
       }
     };
 
     // others options
     $("#showReleaseNotes").onchange = (e) => {
-      twpConfig.set("showReleaseNotes", e.target.value);
+      FTConfig.set("showReleaseNotes", e.target.value);
     };
-    $("#showReleaseNotes").value = twpConfig.get("showReleaseNotes");
+    $("#showReleaseNotes").value = FTConfig.get("showReleaseNotes");
 
     $("#whenShowMobilePopup").onchange = (e) => {
-      twpConfig.set("whenShowMobilePopup", e.target.value);
+      FTConfig.set("whenShowMobilePopup", e.target.value);
     };
-    $("#whenShowMobilePopup").value = twpConfig.get("whenShowMobilePopup");
+    $("#whenShowMobilePopup").value = FTConfig.get("whenShowMobilePopup");
 
     $("#showTranslatePageContextMenu").onchange = (e) => {
-      twpConfig.set("showTranslatePageContextMenu", e.target.value);
+      FTConfig.set("showTranslatePageContextMenu", e.target.value);
     };
-    $("#showTranslatePageContextMenu").value = twpConfig.get(
+    $("#showTranslatePageContextMenu").value = FTConfig.get(
       "showTranslatePageContextMenu"
     );
 
     $("#showTranslateSelectedContextMenu").onchange = (e) => {
-      twpConfig.set("showTranslateSelectedContextMenu", e.target.value);
+      FTConfig.set("showTranslateSelectedContextMenu", e.target.value);
     };
-    $("#showTranslateSelectedContextMenu").value = twpConfig.get(
+    $("#showTranslateSelectedContextMenu").value = FTConfig.get(
       "showTranslateSelectedContextMenu"
     );
 
     $("#showButtonInTheAddressBar").onchange = (e) => {
-      twpConfig.set("showButtonInTheAddressBar", e.target.value);
+      FTConfig.set("showButtonInTheAddressBar", e.target.value);
     };
-    $("#showButtonInTheAddressBar").value = twpConfig.get(
+    $("#showButtonInTheAddressBar").value = FTConfig.get(
       "showButtonInTheAddressBar"
     );
 
     $("#translateClickingOnce").onchange = (e) => {
-      twpConfig.set("translateClickingOnce", e.target.value);
+      FTConfig.set("translateClickingOnce", e.target.value);
     };
-    $("#translateClickingOnce").value = twpConfig.get("translateClickingOnce");
+    $("#translateClickingOnce").value = FTConfig.get("translateClickingOnce");
 
     $("#btnCalculateStorage").style.display = "inline-block";
     $("#storageUsed").style.display = "none";
@@ -1343,7 +1343,7 @@ twpConfig
           throw new Error("Provides an API Key");
         }
 
-        const customServices = twpConfig.get("customServices");
+        const customServices = FTConfig.get("customServices");
 
         const index = customServices.findIndex((cs) => cs.name === "libre");
         if (index !== -1) {
@@ -1351,7 +1351,7 @@ twpConfig
         }
 
         customServices.push(libre);
-        twpConfig.set("customServices", customServices);
+        FTConfig.set("customServices", customServices);
         chrome.runtime.sendMessage({ action: "createLibreService", libre });
       } catch (e) {
         alert(e);
@@ -1359,22 +1359,22 @@ twpConfig
     };
 
     $("#removeLibre").onclick = () => {
-      const customServices = twpConfig.get("customServices");
+      const customServices = FTConfig.get("customServices");
       const index = customServices.findIndex((cs) => cs.name === "libre");
 
       if (index !== -1) {
         customServices.splice(index, 1);
-        twpConfig.set("customServices", customServices);
+        FTConfig.set("customServices", customServices);
         chrome.runtime.sendMessage(
           { action: "removeLibreService" },
           checkedLastError
         );
       }
 
-      if (twpConfig.get("textTranslatorService") === "libre") {
-        twpConfig.set(
+      if (FTConfig.get("textTranslatorService") === "libre") {
+        FTConfig.set(
           "textTranslatorService",
-          twpConfig.get("pageTranslatorService")
+          FTConfig.get("pageTranslatorService")
         );
       }
 
@@ -1382,7 +1382,7 @@ twpConfig
       $("#libreKEY").value = "";
     };
 
-    const libre = twpConfig
+    const libre = FTConfig
       .get("customServices")
       .find((cs) => cs.name === "libre");
     if (libre) {
@@ -1412,7 +1412,7 @@ twpConfig
         const response = await testDeepLFreeApiKey(deepl_freeapi.apiKey);
         $("#deeplApiResponse").textContent = JSON.stringify(response);
         if (response) {
-          const customServices = twpConfig.get("customServices");
+          const customServices = FTConfig.get("customServices");
 
           const index = customServices.findIndex(
             (cs) => cs.name === "deepl_freeapi"
@@ -1422,7 +1422,7 @@ twpConfig
           }
 
           customServices.push(deepl_freeapi);
-          twpConfig.set("customServices", customServices);
+          FTConfig.set("customServices", customServices);
           chrome.runtime.sendMessage({
             action: "createDeeplFreeApiService",
             deepl_freeapi,
@@ -1436,13 +1436,13 @@ twpConfig
     };
 
     $("#removeDeepL").onclick = () => {
-      const customServices = twpConfig.get("customServices");
+      const customServices = FTConfig.get("customServices");
       const index = customServices.findIndex(
         (cs) => cs.name === "deepl_freeapi"
       );
       if (index !== -1) {
         customServices.splice(index, 1);
-        twpConfig.set("customServices", customServices);
+        FTConfig.set("customServices", customServices);
         chrome.runtime.sendMessage(
           { action: "removeDeeplFreeApiService" },
           checkedLastError
@@ -1452,7 +1452,7 @@ twpConfig
       $("#deeplApiResponse").textContent = "";
     };
 
-    const deepl_freeapi = twpConfig
+    const deepl_freeapi = FTConfig
       .get("customServices")
       .find((cs) => cs.name === "deepl_freeapi");
     if (deepl_freeapi) {
@@ -1463,16 +1463,16 @@ twpConfig
     }
 
     $("#showMobilePopupOnDesktop").onchange = (e) => {
-      twpConfig.set("showMobilePopupOnDesktop", e.target.value);
+      FTConfig.set("showMobilePopupOnDesktop", e.target.value);
     };
-    $("#showMobilePopupOnDesktop").value = twpConfig.get(
+    $("#showMobilePopupOnDesktop").value = FTConfig.get(
       "showMobilePopupOnDesktop"
     );
 
     $("#addPaddingToPage").onchange = (e) => {
-      twpConfig.set("addPaddingToPage", e.target.value);
+      FTConfig.set("addPaddingToPage", e.target.value);
     };
-    $("#addPaddingToPage").value = twpConfig.get("addPaddingToPage");
+    $("#addPaddingToPage").value = FTConfig.get("addPaddingToPage");
 
     $("#btnShowProxyConfiguration").onclick = (e) => {
       $("#googleProxyContainer").style.display = "block";
@@ -1495,13 +1495,13 @@ twpConfig
           ? new URL("https://" + inputTtsServer).host
           : null;
 
-        const proxyServers = twpConfig.get("proxyServers");
+        const proxyServers = FTConfig.get("proxyServers");
         proxyServers.google = {
           translateServer,
           ttsServer,
         };
         console.info("proxyServers: ", proxyServers);
-        twpConfig.set("proxyServers", proxyServers);
+        FTConfig.set("proxyServers", proxyServers);
 
         $("#googleTranslateProxyServer").value = translateServer;
         $("#googleTtsProxyServer").value = ttsServer;
@@ -1511,15 +1511,15 @@ twpConfig
     };
 
     $("#removeGoogleProxy").onclick = (e) => {
-      const proxyServers = twpConfig.get("proxyServers");
+      const proxyServers = FTConfig.get("proxyServers");
       delete proxyServers.google;
-      twpConfig.set("proxyServers", proxyServers);
+      FTConfig.set("proxyServers", proxyServers);
 
       $("#googleTranslateProxyServer").value = "";
       $("#googleTtsProxyServer").value = "";
     }
 
-    const googleProxy = twpConfig.get("proxyServers").google;
+    const googleProxy = FTConfig.get("proxyServers").google;
     if (googleProxy) {
       $("#googleTranslateProxyServer").value = googleProxy.translateServer;
       $("#googleTtsProxyServer").value = googleProxy.ttsServer;

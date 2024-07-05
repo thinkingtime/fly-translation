@@ -4,7 +4,7 @@ const extractZip = require("extract-zip");
 
 const zipFile = path.join(
     __dirname,
-    "./Translate Web Pages (translations).zip"
+    "./Fly Translation (translations).zip"
 );
 const resultDir = path.join(__dirname, "./result");
 

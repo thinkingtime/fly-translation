@@ -481,7 +481,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       },
       "EXTENSION_VERSION": {
         "content": "#EXTENSION_VERSION#",
@@ -494,7 +494,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       }
     }
   },

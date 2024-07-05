@@ -291,7 +291,7 @@ const textToSpeech = (function () {
 
     /**
      * Suspend the audio context.
-     * https://github.com/FilipePS/Traduzir-paginas-web/issues/802
+     * https://github.com/thinkingtime/fly-translation/issues/802
      * @returns {Promise<void>} Promise\<void\>
      */
     async suspend() {
@@ -535,7 +535,7 @@ const textToSpeech = (function () {
       this.audios.forEach((audio) => {
         audio.pause();
         // If `currentTime` is not `duration` an audio stream will remain active in Firefox
-        // https://github.com/FilipePS/Traduzir-paginas-web/issues/802
+        // https://github.com/thinkingtime/fly-translation/issues/802
         if (!isNaN(audio.duration) && isFinite(audio.duration)) {
           audio.currentTime = audio.duration;
         }
@@ -593,7 +593,7 @@ const textToSpeech = (function () {
   // Listen for messages coming from contentScript or other scripts.
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "textToSpeech") {
-      if (twpConfig.get("textToSpeechService") === "bing") {
+      if (FTConfig.get("textToSpeechService") === "bing") {
         bingService
           .textToSpeech(request.text, request.targetLanguage)
           .finally(() => {
@@ -615,8 +615,8 @@ const textToSpeech = (function () {
   });
 
   // Listen for changes to the audio speed setting and apply it immediately.
-  twpConfig.onReady(async () => {
-    twpConfig.onChanged((name, newvalue) => {
+  FTConfig.onReady(async () => {
+    FTConfig.onChanged((name, newvalue) => {
       if (name === "ttsSpeed") {
         googleService.setAudioSpeed(newvalue);
         bingService.setAudioSpeed(newvalue);
@@ -637,12 +637,12 @@ const textToSpeech = (function () {
       }
     });
 
-    googleService.setAudioSpeed(twpConfig.get("ttsSpeed"));
-    bingService.setAudioSpeed(twpConfig.get("ttsSpeed"));
-    googleService.setAudioVolume(twpConfig.get("ttsVolume"));
-    bingService.setAudioVolume(twpConfig.get("ttsVolume"));
+    googleService.setAudioSpeed(FTConfig.get("ttsSpeed"));
+    bingService.setAudioSpeed(FTConfig.get("ttsSpeed"));
+    googleService.setAudioVolume(FTConfig.get("ttsVolume"));
+    bingService.setAudioVolume(FTConfig.get("ttsVolume"));
 
-    const proxyServers = twpConfig.get("proxyServers");
+    const proxyServers = FTConfig.get("proxyServers");
     if (proxyServers?.google?.ttsServer) {
       const url = new URL(googleService.baseURL);
       url.host = proxyServers.google.ttsServer;

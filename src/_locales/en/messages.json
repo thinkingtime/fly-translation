@@ -481,7 +481,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       },
       "EXTENSION_VERSION": {
         "content": "#EXTENSION_VERSION#",
@@ -494,7 +494,7 @@
     "placeholders": {
       "EXTENSION_NAME": {
         "content": "#EXTENSION_NAME#",
-        "example": "TWP - Translate Web Pages"
+        "example": "FT - Fly Translation"
       }
     }
   },
@@ -529,7 +529,7 @@
     "message": "Default language"
   },
   "msgExtUILanguage": {
-    "message": "Extension user interface language"
+    "message": "user interface language"
   },
   "msgSetDeepLAlert": {
     "message": "Are you sure you want to set the translation service to DeepL?\nA new tab will open, and the translation will take place there."

@@ -27,7 +27,7 @@ async function downloadDocument(url) {
         if (e.lengthComputable) {
           const percentComplete = (e.loaded / e.total) * 100;
           pleaseWait.textContent =
-            twpI18n.getMessage("msgPleaseWait") +
+            FTI18n.getMessage("msgPleaseWait") +
             " " +
             percentComplete.toFixed(1) +
             "%";
@@ -57,7 +57,7 @@ async function convertDocument(service, data) {
   const myForm = document.getElementById("form_" + service);
   myForm.querySelector('[type="file"]').files = container.files;
   if (myForm.querySelector('[name="tl"]')) {
-    myForm.querySelector('[name="tl"]').value = twpConfig.get("targetLanguage");
+    myForm.querySelector('[name="tl"]').value = FTConfig.get("targetLanguage");
   }
   pleaseWait.style.display = "none";
   send.style.display = "block";
@@ -95,7 +95,7 @@ selectService.onclick = async (e) => {
           conversionAlert.style.display = "block";
           googleTranslate.style.display = "none";
           selectService.style.display = "block";
-          cannotUseGoogle.textContent = twpI18n.getMessage(
+          cannotUseGoogle.textContent = FTI18n.getMessage(
             "msgFileLargerThan",
             "10 MB"
           );
@@ -109,7 +109,7 @@ selectService.onclick = async (e) => {
     });
   } else if (e.target.dataset.name === "google") {
     window.open(
-      `https://translate.google.com/?sl=auto&tl=${twpConfig.get(
+      `https://translate.google.com/?sl=auto&tl=${FTConfig.get(
         "targetLanguage"
       )}&op=docs`,
       "_blank"
@@ -122,7 +122,7 @@ selectService.onclick = async (e) => {
       "https://www.onlinedoctranslator.com/translationform",
       "_blank"
     );
-  } else if (e.target.dataset.name === "pdftwp") {
+  } else if (e.target.dataset.name === "pdfFT") {
     window.open("https://pdf.translatewebpages.org", "_blank");
     window.close();
   }
@@ -156,13 +156,13 @@ function enableDarkMode() {
   if ($("#lightModeElement")) $("#lightModeElement").remove();
 }
 
-twpConfig
+FTConfig
   .onReady()
-  .then(() => twpI18n.updateUiMessages())
+  .then(() => FTI18n.updateUiMessages())
   .then(() => {
-    twpI18n.translateDocument();
+    FTI18n.translateDocument();
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches)
           enableDarkMode();

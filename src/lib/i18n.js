@@ -1,7 +1,7 @@
 "use strict";
 
-const twpI18n = (function () {
-  const twpI18n = {};
+const FTI18n = (function () {
+  const FTI18n = {};
   let messages = null;
 
   /**
@@ -15,7 +15,7 @@ const twpI18n = (function () {
    * @param {string | string[]} substitutions
    * @returns {string} localizedString
    */
-  twpI18n.getMessage = function (messageName, substitutions = null) {
+  FTI18n.getMessage = function (messageName, substitutions = null) {
     try {
       if (messages) {
         messageName = messageName.toLowerCase();
@@ -69,7 +69,7 @@ const twpI18n = (function () {
     for (const element of root.querySelectorAll(
       `[data-i18n-${attributeName}]`
     )) {
-      let text = twpI18n.getMessage(
+      let text = FTI18n.getMessage(
         element.getAttribute(`data-i18n-${attributeName}`),
         element.getAttribute("data-i18n-ph-value")
       );
@@ -85,9 +85,9 @@ const twpI18n = (function () {
    * translate innerText and attributes for a Document or HTMLElement
    * @param {Document | HTMLElement | ShadowRoot} root
    */
-  twpI18n.translateDocument = function (root = document) {
+  FTI18n.translateDocument = function (root = document) {
     for (const element of root.querySelectorAll("[data-i18n]")) {
-      let text = twpI18n.getMessage(
+      let text = FTI18n.getMessage(
         element.getAttribute("data-i18n"),
         element.getAttribute("data-i18n-ph-value")
       );
@@ -106,8 +106,8 @@ const twpI18n = (function () {
    * Updates interface location messages based on user preference
    * @returns {Promise<void>}
    */
-  twpI18n.updateUiMessages = async (temporaryLanguage = null) => {
-    let uiLanguage = temporaryLanguage || twpConfig.get("uiLanguage");
+  FTI18n.updateUiMessages = async (temporaryLanguage = null) => {
+    let uiLanguage = temporaryLanguage || FTConfig.get("uiLanguage");
     uiLanguage = uiLanguage.replace("-", "_");
     if (uiLanguage === "default") {
       messages = null;
@@ -130,15 +130,15 @@ const twpI18n = (function () {
     }
   };
 
-  twpConfig.onReady(function () {
-    twpI18n.updateUiMessages();
+  FTConfig.onReady(function () {
+    FTI18n.updateUiMessages();
 
-    twpConfig.onChanged(function (name, newValue) {
+    FTConfig.onChanged(function (name, newValue) {
       if (name === "uiLanguage") {
-        twpI18n.updateUiMessages();
+        FTI18n.updateUiMessages();
       }
     });
   });
 
-  return twpI18n;
+  return FTI18n;
 })();

@@ -228,7 +228,7 @@ select {
   padding-left: 10px !important;
 }
 
-/* fix https://github.com/FilipePS/Traduzir-paginas-web/issues/324 */
+/* fix https://github.com/thinkingtime/fly-translation/issues/324 */
 #menuContainer {
   background-color: unset !important;
 }

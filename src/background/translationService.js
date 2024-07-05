@@ -643,7 +643,7 @@ const translationService = (function () {
     }
 
     /**
-     * https://github.com/FilipePS/Traduzir-paginas-web/issues/484
+     * https://github.com/thinkingtime/fly-translation/issues/484
      * @param {string} str
      * @returns {string} fixedStr
      */
@@ -732,7 +732,7 @@ const translationService = (function () {
           // maybe the same index appears several times
           // maybe some text will be outside of <a i={number}> (Usually text before the first <a> tag, and some whitespace between the <a> tags),
           // in this case, The outside text will be placed inside the <a i={number}> closer
-          // https://github.com/FilipePS/Traduzir-paginas-web/issues/449
+          // https://github.com/thinkingtime/fly-translation/issues/449
           // TODO lidar com tags dentro de tags e tags vazias
           // https://de.wikipedia.org/wiki/Wikipedia:Hauptseite
           // "{\"originalText\":\"<pre><a i=0>\\nFür den </a><a i=1>37. Schreib­wettbewerb</a><a i=2> und den </a><a i=3>18. Miniaturwettbewerb</a><a i=4> können ab sofort Artikel nominiert werden.</a></pre>\",\"translatedText\":\"<pre><a i=0>\\n</a>Artigos já podem ser indicados <a i=0>para o</a> <a i=1>37º Concurso de Redação <a i=2>e</a></a> <a i=3><a i=4>18º</a> Concurso de Miniaturas</a> .</pre>\",\"detectedLanguage\":\"de\",\"status\":\"complete\",\"waitTranlate\":{}}"
@@ -796,7 +796,7 @@ const translationService = (function () {
           if (dontSortResults) {
             // Should not sort the <a i={number}> of Google Translate result
             // Instead of it, join the texts without sorting
-            // https://github.com/FilipePS/Traduzir-paginas-web/issues/163
+            // https://github.com/thinkingtime/fly-translation/issues/163
 
             // /** @type {string[]} */
             // const finalResulArray = [];
@@ -1365,8 +1365,8 @@ const translationService = (function () {
    */
   const getSafeServiceByName = (serviceName) => {
     if (
-      twpConfig.get("enabledServices").includes(serviceName) ||
-      twpConfig.get("customServices").find((cs) => cs.name === serviceName)
+      FTConfig.get("enabledServices").includes(serviceName) ||
+      FTConfig.get("customServices").find((cs) => cs.name === serviceName)
     ) {
       return serviceList.get(serviceName);
     } else {
@@ -1382,7 +1382,7 @@ const translationService = (function () {
     dontSaveInPersistentCache = false,
     dontSortResults = false
   ) => {
-    serviceName = twpLang.getAlternativeService(
+    serviceName = FTLang.getAlternativeService(
       targetLanguage,
       serviceName,
       true
@@ -1404,7 +1404,7 @@ const translationService = (function () {
     sourceArray,
     dontSaveInPersistentCache = false
   ) => {
-    serviceName = twpLang.getAlternativeService(
+    serviceName = FTLang.getAlternativeService(
       targetLanguage,
       serviceName,
       false
@@ -1427,7 +1427,7 @@ const translationService = (function () {
     originalText,
     dontSaveInPersistentCache = false
   ) => {
-    serviceName = twpLang.getAlternativeService(
+    serviceName = FTLang.getAlternativeService(
       targetLanguage,
       serviceName,
       false
@@ -1446,7 +1446,7 @@ const translationService = (function () {
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // If the translation request came from an incognito window, the translation should not be cached on disk.
     let dontSaveInPersistentCache = true;
-    if (twpConfig.get("enableDiskCache") !== "yes") {
+    if (FTConfig.get("enableDiskCache") !== "yes") {
       dontSaveInPersistentCache = true;
     } else {
       dontSaveInPersistentCache = sender.tab ? sender.tab.incognito : false;
@@ -1527,24 +1527,24 @@ const translationService = (function () {
     }
   });
 
-  twpConfig.onReady(function () {
-    if (twpConfig.get("customServices").find((cs) => cs.name === "libre")) {
-      const libre = twpConfig
+  FTConfig.onReady(function () {
+    if (FTConfig.get("customServices").find((cs) => cs.name === "libre")) {
+      const libre = FTConfig
         .get("customServices")
         .find((cs) => cs.name === "libre");
       serviceList.set("libre", createLibreService(libre.url, libre.apiKey));
     }
 
     if (
-      twpConfig.get("customServices").find((cs) => cs.name === "deepl_freeapi")
+      FTConfig.get("customServices").find((cs) => cs.name === "deepl_freeapi")
     ) {
-      const deepl_freeapi = twpConfig
+      const deepl_freeapi = FTConfig
         .get("customServices")
         .find((cs) => cs.name === "deepl_freeapi");
       serviceList.set("deepl", createDeeplFreeApiService(deepl_freeapi.apiKey));
     }
 
-    const proxyServers = twpConfig.get("proxyServers");
+    const proxyServers = FTConfig.get("proxyServers");
     if (proxyServers?.google?.translateServer) {
       const url = new URL(googleService.baseURL);
       url.host = proxyServers.google.translateServer;
@@ -1552,7 +1552,7 @@ const translationService = (function () {
     }
   });
 
-  twpConfig.onChanged((name, newValue) => {
+  FTConfig.onChanged((name, newValue) => {
     if (name === "proxyServers") {
       if (newValue?.google?.translateServer) {
         const url = new URL(googleService.baseURL);

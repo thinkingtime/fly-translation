@@ -323,16 +323,16 @@ function getTabHostName() {
   );
 }
 
-Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
+Promise.all([FTConfig.onReady(), getTabHostName()]).then(function (_) {
   const tabHostName = _[1];
-  // "sup" não será traduzido https://github.com/FilipePS/Traduzir-paginas-web/issues/647
+  // "sup" não será traduzido https://github.com/thinkingtime/fly-translation/issues/647
   /* prettier-ignore */
   const htmlTagsInlineText = ["#text", "a", "abbr", "acronym", "b", "bdo", "big", "cite", "dfn", "em", "i", "label", "q", "s", "small", "span", "strong", "sub", /*"sup",*/ "u", "tt", "var"];
   /* prettier-ignore */
   const htmlTagsInlineIgnore = ["br", "code", "kbd", "wbr"]; // and input if type is submit or button, and <pre> depending on settings
   /* prettier-ignore */
   const htmlTagsNoTranslate = ["title", "script", "style", "textarea", "svg", "template",
-  "math", "mjx-container", "tex-math" // https://github.com/FilipePS/Traduzir-paginas-web/issues/704
+  "math", "mjx-container", "tex-math" // https://github.com/thinkingtime/fly-translation/issues/704
   ];
 
   if (location.hostname === "pdf.translatewebpages.org") {
@@ -342,9 +342,9 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     }
   }
 
-  // https://github.com/FilipePS/Traduzir-paginas-web/issues/609
+  // https://github.com/thinkingtime/fly-translation/issues/609
   if (
-    twpConfig.get("translateTag_pre") !== "yes" &&
+    FTConfig.get("translateTag_pre") !== "yes" &&
     !(
       document.body.childElementCount === 1 &&
       document.body.firstChild.nodeName.toLocaleLowerCase() === "pre"
@@ -352,7 +352,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   ) {
     htmlTagsInlineIgnore.push("pre");
   }
-  twpConfig.onChanged((name, newvalue) => {
+  FTConfig.onChanged((name, newvalue) => {
     switch (name) {
       case "translateTag_pre":
         const index = htmlTagsInlineIgnore.indexOf("pre");
@@ -377,10 +377,10 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
   //TODO FOO
   if (
-    twpConfig.get("useOldPopup") == "yes" ||
-    twpConfig.get("popupPanelSection") <= 1
+    FTConfig.get("useOldPopup") == "yes" ||
+    FTConfig.get("popupPanelSection") <= 1
   ) {
-    twpConfig.set("targetLanguage", twpConfig.get("targetLanguages")[0]);
+    FTConfig.set("targetLanguage", FTConfig.get("targetLanguages")[0]);
   }
 
   // Pieces are a set of nodes separated by inline tags that form a sentence or paragraph.
@@ -389,11 +389,11 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   let currentPageLanguage = "und";
   let pageLanguageState = "original";
   let currentSourceLanguage = "auto";
-  let currentTargetLanguage = twpConfig.get("targetLanguage");
-  let currentPageTranslatorService = twpConfig.get("pageTranslatorService");
-  let customDictionary = sortDictionary(twpConfig.get("customDictionary"));
+  let currentTargetLanguage = FTConfig.get("targetLanguage");
+  let currentPageTranslatorService = FTConfig.get("pageTranslatorService");
+  let customDictionary = sortDictionary(FTConfig.get("customDictionary"));
   let dontSortResults =
-    twpConfig.get("dontSortResults") == "yes" ? true : false;
+    FTConfig.get("dontSortResults") == "yes" ? true : false;
 
   let fooCount = 0;
 
@@ -467,7 +467,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   function enableMutatinObserver() {
     disableMutatinObserver();
 
-    if (twpConfig.get("translateDynamicallyCreatedContent") == "yes") {
+    if (FTConfig.get("translateDynamicallyCreatedContent") == "yes") {
       translateNewNodesTimerHandler = setInterval(translateNewNodes, 2000);
       mutationObserver.observe(document.body, {
         childList: true,
@@ -527,13 +527,13 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     const nodeName = node.nodeName.toLowerCase();
     const index = htmlTagsNoTranslate.indexOf(nodeName);
 
-    //https://github.com/FilipePS/Traduzir-paginas-web/issues/704
+    //https://github.com/thinkingtime/fly-translation/issues/704
     if (nodeName === "span" && node.classList.contains("mjx-chtml")) {
       return true;
     } else if (index === -1) {
       return false;
     } else {
-      // https://github.com/FilipePS/Traduzir-paginas-web/issues/654
+      // https://github.com/thinkingtime/fly-translation/issues/654
       if (
         nodeName === "script" &&
         node.getAttribute("data-spotim-module") === "spotim-launcher" &&
@@ -582,13 +582,13 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
             node.getAttribute("translate") === "no" ||
             node.isContentEditable ||
             node.classList.contains("CodeMirror") || // https://www.w3schools.com/html/tryit.asp
-            node.classList.contains("material-icons") || // https://github.com/FilipePS/Traduzir-paginas-web/issues/481
+            node.classList.contains("material-icons") || // https://github.com/thinkingtime/fly-translation/issues/481
             node.classList.contains("material-symbols-outlined") ||
-            nodeName.startsWith("br-") || // https://github.com/FilipePS/Traduzir-paginas-web/issues/627
-            node.getAttribute("id") === "branch-select-menu" || // https://github.com/FilipePS/Traduzir-paginas-web/issues/570
+            nodeName.startsWith("br-") || // https://github.com/thinkingtime/fly-translation/issues/627
+            node.getAttribute("id") === "branch-select-menu" || // https://github.com/thinkingtime/fly-translation/issues/570
             (location.hostname === "twitter.com" &&
               nodeName === "a" &&
-              (node.matches ? node.matches("article a") : true)) // https://github.com/FilipePS/Traduzir-paginas-web/issues/449
+              (node.matches ? node.matches("article a") : true)) // https://github.com/thinkingtime/fly-translation/issues/449
           ) {
             if (piecesToTranslate[index].nodes.length > 0) {
               currentParagraphSize = 0;
@@ -1128,9 +1128,9 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       currentTargetLanguage = targetLanguage;
     }
 
-    customDictionary = sortDictionary(twpConfig.get("customDictionary"));
+    customDictionary = sortDictionary(FTConfig.get("customDictionary"));
 
-    // https://github.com/FilipePS/Traduzir-paginas-web/issues/619
+    // https://github.com/thinkingtime/fly-translation/issues/619
     if (
       location.hostname === "sberbank.com" ||
       location.hostname === "www.sberbank.com"
@@ -1272,15 +1272,15 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
         pageTranslator.translatePage();
       }
     } else if (request.action === "autoTranslateBecauseClickedALink") {
-      if (twpConfig.get("autoTranslateWhenClickingALink") === "yes") {
+      if (FTConfig.get("autoTranslateWhenClickingALink") === "yes") {
         pageTranslator.onGetOriginalTabLanguage(function () {
           if (
             pageLanguageState === "original" &&
             originalTabLanguage !== currentTargetLanguage &&
-            twpConfig
+            FTConfig
               .get("neverTranslateLangs")
               .indexOf(originalTabLanguage) === -1 &&
-            twpConfig.get("neverTranslateSites").indexOf(tabHostName) === -1
+            FTConfig.get("neverTranslateSites").indexOf(tabHostName) === -1
           ) {
             pageTranslator.translatePage();
           }
@@ -1345,27 +1345,27 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
           if (result === "und") {
             originalTabLanguage = result;
             if (
-              (twpConfig.get("alwaysTranslateSites").indexOf(tabHostName) !==
+              (FTConfig.get("alwaysTranslateSites").indexOf(tabHostName) !==
                 -1 ||
                 (location.hostname === "pdf.translatewebpages.org" &&
-                  twpConfig.get("neverTranslateSites").indexOf(tabHostName) ===
+                  FTConfig.get("neverTranslateSites").indexOf(tabHostName) ===
                     -1)) &&
               !platformInfo.isMobile.any
             ) {
               pageTranslator.translatePage();
             }
           } else {
-            const langCode = twpLang.fixTLanguageCode(result);
+            const langCode = FTLang.fixTLanguageCode(result);
             if (langCode) {
               originalTabLanguage = langCode;
             }
             if (
               (location.hostname === "pdftohtml.translatewebpages.org" &&
                 location.href.indexOf("?autotranslate") !== -1 &&
-                twpConfig.get("neverTranslateSites").indexOf(tabHostName) ===
+                FTConfig.get("neverTranslateSites").indexOf(tabHostName) ===
                   -1) ||
               (location.hostname === "pdf.translatewebpages.org" &&
-                twpConfig.get("neverTranslateSites").indexOf(tabHostName) ===
+                FTConfig.get("neverTranslateSites").indexOf(tabHostName) ===
                   -1)
             ) {
               pageTranslator.translatePage();
@@ -1378,7 +1378,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
                 location.hostname !== "translated.turbopages.org" &&
                 !location.hostname.endsWith("translate.goog") &&
                 location.hostname !== "sberbank.com" &&
-                location.hostname !== "www.sberbank.com" // https://github.com/FilipePS/Traduzir-paginas-web/issues/619
+                location.hostname !== "www.sberbank.com" // https://github.com/thinkingtime/fly-translation/issues/619
               ) {
                 if (
                   pageLanguageState === "original" &&
@@ -1386,20 +1386,20 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
                   !chrome.extension.inIncognitoContext
                 ) {
                   if (
-                    twpConfig
+                    FTConfig
                       .get("neverTranslateSites")
                       .indexOf(tabHostName) === -1
                   ) {
                     if (
                       langCode &&
                       langCode !== currentTargetLanguage &&
-                      twpConfig
+                      FTConfig
                         .get("alwaysTranslateLangs")
                         .indexOf(langCode) !== -1
                     ) {
                       pageTranslator.translatePage();
                     } else if (
-                      twpConfig
+                      FTConfig
                         .get("alwaysTranslateSites")
                         .indexOf(tabHostName) !== -1 &&
                       !platformInfo.isMobile.any
@@ -1462,7 +1462,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
         if (
           result === "translated" &&
           pageLanguageState === "original" &&
-          twpConfig.get("enableIframePageTranslation") === "yes"
+          FTConfig.get("enableIframePageTranslation") === "yes"
         ) {
           pageTranslator.translatePage();
         }

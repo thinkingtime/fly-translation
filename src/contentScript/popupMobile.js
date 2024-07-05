@@ -10,10 +10,10 @@ function getTabHostName() {
 }
 
 void (async function () {
-  await twpConfig.onReady();
+  await FTConfig.onReady();
   if (
     !platformInfo.isMobile.any &&
-    twpConfig.get("showMobilePopupOnDesktop") !== "yes"
+    FTConfig.get("showMobilePopupOnDesktop") !== "yes"
   )
     return;
 
@@ -36,7 +36,7 @@ void (async function () {
   ).then((response) => response.blob());
 
   // Load i18n messages based on your language preference
-  await twpI18n.updateUiMessages();
+  await FTI18n.updateUiMessages();
 
   // creates shadow root, root element and append to document
   const rootElement = document.createElement("div");
@@ -66,7 +66,7 @@ void (async function () {
     clearInterval(lastInteractionInterval);
 
     const updatePadding = () => {
-      if (twpConfig.get("addPaddingToPage") === "yes") {
+      if (FTConfig.get("addPaddingToPage") === "yes") {
         const popupElement = shadowRoot.getElementById("popup");
         let padding = popupElement.clientHeight + "px";
 
@@ -78,7 +78,7 @@ void (async function () {
 
         document.documentElement.style.height =
           document.documentElement.scrollHeight + "px";
-        if (twpConfig.get("popupMobilePosition") === "top") {
+        if (FTConfig.get("popupMobilePosition") === "top") {
           document.documentElement.style.paddingTop = padding;
           document.documentElement.style.paddingBottom = null;
         } else {
@@ -102,7 +102,7 @@ void (async function () {
           Date.now() - lastInteraction > 1000 * 8 &&
           menuContainer.style.display !== "block" &&
           serviceSelectorIsOpen === false &&
-          twpConfig.get("popupMobileKeepOnScren") === "no"
+          FTConfig.get("popupMobileKeepOnScren") === "no"
         ) {
           hidePopup();
         }
@@ -121,7 +121,7 @@ void (async function () {
           { transform: "translateY(0px)", opacity: "1" },
           {
             transform: `translateY(${
-              twpConfig.get("popupMobilePosition") === "top" ? "-50px" : "50px"
+              FTConfig.get("popupMobilePosition") === "top" ? "-50px" : "50px"
             })`,
             opacity: "0",
           },
@@ -146,7 +146,7 @@ void (async function () {
       rootElement.remove();
     }
 
-    if (twpConfig.get("addPaddingToPage") === "yes") {
+    if (FTConfig.get("addPaddingToPage") === "yes") {
       document.documentElement.style.height = null;
       document.documentElement.style.paddingTop = null;
       document.documentElement.style.paddingBottom = null;
@@ -155,16 +155,16 @@ void (async function () {
 
   // set text direction
   if (
-    twpLang.isRtlLanguage(
-      twpConfig.get("uiLanguage") ||
-        twpLang.fixUILanguageCode(chrome.i18n.getUILanguage())
+    FTLang.isRtlLanguage(
+      FTConfig.get("uiLanguage") ||
+        FTLang.fixUILanguageCode(chrome.i18n.getUILanguage())
     )
   ) {
     shadowRoot.querySelector("main").setAttribute("dir", "rtl");
   }
 
   // translate shadow root
-  twpI18n.translateDocument(shadowRoot);
+  FTI18n.translateDocument(shadowRoot);
 
   // close popup
   const popupElement = shadowRoot.getElementById("popup");
@@ -224,7 +224,7 @@ void (async function () {
     shadowRoot.getElementById("serviceIcon")
   );
   const updateServiceIcon = () => {
-    const service = twpConfig.get("pageTranslatorService");
+    const service = FTConfig.get("pageTranslatorService");
     if (service === "google") {
       serviceIconElement.src = URL.createObjectURL(googleIcon);
     } else if (service === "yandex") {
@@ -255,7 +255,7 @@ void (async function () {
     lastInteraction = Date.now();
 
     const service = serviceSelector.value;
-    twpConfig.set("pageTranslatorService", service);
+    FTConfig.set("pageTranslatorService", service);
     updateServiceIcon();
 
     serviceIconElement.style.scale = null;
@@ -270,7 +270,7 @@ void (async function () {
     serviceIconElement.style.scale = null;
     serviceIconElement.style.rotate = null;
   };
-  serviceSelector.value = twpConfig.get("pageTranslatorService");
+  serviceSelector.value = FTConfig.get("pageTranslatorService");
 
   // gear button
   const gearButton = shadowRoot.getElementById("gear");
@@ -324,32 +324,32 @@ void (async function () {
     if (action === "choose-another-language") {
       return;
     } else if (action === "always-translate-from") {
-      tabLanguage = twpLang.fixTLanguageCode(tabLanguage);
-      if (twpConfig.get("alwaysTranslateLangs").indexOf(tabLanguage) === -1) {
-        twpConfig.addLangToAlwaysTranslate(tabLanguage);
+      tabLanguage = FTLang.fixTLanguageCode(tabLanguage);
+      if (FTConfig.get("alwaysTranslateLangs").indexOf(tabLanguage) === -1) {
+        FTConfig.addLangToAlwaysTranslate(tabLanguage);
         pageTranslator.translatePage();
       } else {
-        twpConfig.removeLangFromAlwaysTranslate(tabLanguage);
+        FTConfig.removeLangFromAlwaysTranslate(tabLanguage);
       }
     } else if (action === "never-translate-from") {
-      tabLanguage = twpLang.fixTLanguageCode(tabLanguage);
-      if (twpConfig.get("neverTranslateLangs").indexOf(tabLanguage) === -1) {
-        twpConfig.addLangToNeverTranslate(tabLanguage);
+      tabLanguage = FTLang.fixTLanguageCode(tabLanguage);
+      if (FTConfig.get("neverTranslateLangs").indexOf(tabLanguage) === -1) {
+        FTConfig.addLangToNeverTranslate(tabLanguage);
         pageTranslator.restorePage();
       } else {
-        twpConfig.removeLangFromNeverTranslate(tabLanguage);
+        FTConfig.removeLangFromNeverTranslate(tabLanguage);
       }
     } else if (action === "never-translate-this-site") {
-      if (twpConfig.get("neverTranslateSites").indexOf(tabHostName) === -1) {
-        twpConfig.addSiteToNeverTranslate(tabHostName);
+      if (FTConfig.get("neverTranslateSites").indexOf(tabHostName) === -1) {
+        FTConfig.addSiteToNeverTranslate(tabHostName);
         pageTranslator.restorePage();
       } else {
-        twpConfig.removeSiteFromNeverTranslate(tabHostName);
+        FTConfig.removeSiteFromNeverTranslate(tabHostName);
       }
     } else if (action === "show-translate-selected-button") {
-      twpConfig.set(
+      FTConfig.set(
         "showTranslateSelectedButton",
-        twpConfig.get("showTranslateSelectedButton") === "yes" ? "no" : "yes"
+        FTConfig.get("showTranslateSelectedButton") === "yes" ? "no" : "yes"
       );
     } else if (action === "more-options") {
       const generateRandomHash = (length) => {
@@ -374,14 +374,14 @@ void (async function () {
         "blank"
       );
     } else if (action === "keep-on-screen") {
-      twpConfig.set(
+      FTConfig.set(
         "popupMobileKeepOnScren",
-        twpConfig.get("popupMobileKeepOnScren") === "yes" ? "no" : "yes"
+        FTConfig.get("popupMobileKeepOnScren") === "yes" ? "no" : "yes"
       );
     } else if (action === "change-position") {
-      twpConfig.set(
+      FTConfig.set(
         "popupMobilePosition",
-        twpConfig.get("popupMobilePosition") === "top" ? "bottom" : "top"
+        FTConfig.get("popupMobilePosition") === "top" ? "bottom" : "top"
       );
     }
 
@@ -396,15 +396,15 @@ void (async function () {
     const questionElement = shadowRoot.getElementById("question");
     const btnTranslate = shadowRoot.getElementById("btnTranslate");
     if (pageLanguageState === "original") {
-      questionElement.textContent = twpI18n.getMessage("msgTranslatePage");
-      btnTranslate.textContent = twpI18n.getMessage("btnTranslate");
+      questionElement.textContent = FTI18n.getMessage("msgTranslatePage");
+      btnTranslate.textContent = FTI18n.getMessage("btnTranslate");
     } else {
-      questionElement.textContent = twpI18n.getMessage("msgPageTranslated");
-      btnTranslate.textContent = twpI18n.getMessage("btnUndoTranslation");
+      questionElement.textContent = FTI18n.getMessage("msgPageTranslated");
+      btnTranslate.textContent = FTI18n.getMessage("btnUndoTranslation");
     }
 
     // update show-translate-selected-button checkicon
-    if (twpConfig.get("showTranslateSelectedButton") === "yes") {
+    if (FTConfig.get("showTranslateSelectedButton") === "yes") {
       shadowRoot.querySelector(
         `#menu-options [data-value="show-translate-selected-button"] [checkicon]`
       ).textContent = "✔";
@@ -415,7 +415,7 @@ void (async function () {
     }
 
     // update never-translate-this-site checkicon
-    if (twpConfig.get("neverTranslateSites").indexOf(tabHostName) !== -1) {
+    if (FTConfig.get("neverTranslateSites").indexOf(tabHostName) !== -1) {
       shadowRoot.querySelector(
         `#menu-options [data-value="never-translate-this-site"] [checkicon]`
       ).textContent = "✔";
@@ -425,19 +425,19 @@ void (async function () {
       ).textContent = "";
     }
 
-    tabLanguage = twpLang.fixTLanguageCode(tabLanguage) || "und";
+    tabLanguage = FTLang.fixTLanguageCode(tabLanguage) || "und";
 
     // update from-to text when original tab is detected
     const from_to_element = shadowRoot.getElementById("from-to");
-    from_to_element.textContent = twpI18n.getMessage("msgTranslateFromTo", [
-      twpLang.codeToLanguage(tabLanguage),
-      twpLang.codeToLanguage(twpConfig.get("targetLanguage")),
+    from_to_element.textContent = FTI18n.getMessage("msgTranslateFromTo", [
+      FTLang.codeToLanguage(tabLanguage),
+      FTLang.codeToLanguage(FTConfig.get("targetLanguage")),
     ]);
 
     // show or hide always-translate-from and never-translate-from
     if (
       tabLanguage === "und" ||
-      tabLanguage == twpConfig.get("targetLanguage")
+      tabLanguage == FTConfig.get("targetLanguage")
     ) {
       shadowRoot.querySelector(
         `#menu-options [data-value="always-translate-from"]`
@@ -457,12 +457,12 @@ void (async function () {
     // update always-translate-from text
     shadowRoot.querySelector(
       `#menu-options [data-value="always-translate-from"] [data-i18n]`
-    ).textContent = twpI18n.getMessage("lblAlwaysTranslate", [
-      twpLang.codeToLanguage(tabLanguage),
+    ).textContent = FTI18n.getMessage("lblAlwaysTranslate", [
+      FTLang.codeToLanguage(tabLanguage),
     ]);
 
     // update always-translate-from checkicon
-    if (twpConfig.get("alwaysTranslateLangs").indexOf(tabLanguage) !== -1) {
+    if (FTConfig.get("alwaysTranslateLangs").indexOf(tabLanguage) !== -1) {
       shadowRoot.querySelector(
         `#menu-options [data-value="always-translate-from"] [checkicon]`
       ).textContent = "✔";
@@ -473,7 +473,7 @@ void (async function () {
     }
 
     // update never-translate-from checkicon
-    if (twpConfig.get("neverTranslateLangs").indexOf(tabLanguage) !== -1) {
+    if (FTConfig.get("neverTranslateLangs").indexOf(tabLanguage) !== -1) {
       shadowRoot.querySelector(
         `#menu-options [data-value="never-translate-from"] [checkicon]`
       ).textContent = "✔";
@@ -484,7 +484,7 @@ void (async function () {
     }
 
     // update keep-on-screen checkicon
-    if (twpConfig.get("popupMobileKeepOnScren") === "yes") {
+    if (FTConfig.get("popupMobileKeepOnScren") === "yes") {
       shadowRoot.querySelector(
         `#menu-options [data-value="keep-on-screen"] [checkicon]`
       ).textContent = "✔";
@@ -495,7 +495,7 @@ void (async function () {
     }
 
     // update change-position
-    if (twpConfig.get("popupMobilePosition") === "top") {
+    if (FTConfig.get("popupMobilePosition") === "top") {
       const bottomStyle = shadowRoot.getElementById("bottom-style");
       if (bottomStyle) bottomStyle.remove();
     } else {
@@ -567,7 +567,7 @@ void (async function () {
 
   // fill language list
   (function () {
-    let langs = twpLang.getLanguageList();
+    let langs = FTLang.getLanguageList();
 
     const langsSorted = [];
 
@@ -595,18 +595,18 @@ void (async function () {
 
     const buildRecentsLanguages = () => {
       eRecentsLangs.innerHTML = "";
-      for (const value of twpConfig.get("targetLanguages")) {
+      for (const value of FTConfig.get("targetLanguages")) {
         const option = document.createElement("option");
         option.value = value;
         option.textContent = langs[value];
         eRecentsLangs.appendChild(option);
       }
-      menuSelectLanguage.value = twpConfig.get("targetLanguages")[0];
+      menuSelectLanguage.value = FTConfig.get("targetLanguages")[0];
     };
     buildRecentsLanguages();
 
     menuSelectLanguage.oninput = () => {
-      twpConfig.setTargetLanguage(menuSelectLanguage.value, true);
+      FTConfig.setTargetLanguage(menuSelectLanguage.value, true);
       pageTranslator.translatePage(menuSelectLanguage.value);
       buildRecentsLanguages();
       updateInterface();
@@ -636,17 +636,17 @@ void (async function () {
   pageTranslator.onGetOriginalTabLanguage(function (_tabLanguage) {
     tabLanguage = _tabLanguage || "und";
     if (tabLanguage !== "und") {
-      tabLanguage = twpLang.fixTLanguageCode(tabLanguage);
+      tabLanguage = FTLang.fixTLanguageCode(tabLanguage);
     }
     if (
-      twpConfig.get("whenShowMobilePopup") !== "only-when-i-touch" &&
+      FTConfig.get("whenShowMobilePopup") !== "only-when-i-touch" &&
       tabLanguage !== "und" &&
-      twpConfig.get("neverTranslateLangs").indexOf(tabLanguage) === -1 &&
-      twpConfig.get("neverTranslateSites").indexOf(tabHostName) === -1 &&
-      twpConfig.get("targetLanguage") !== tabLanguage
+      FTConfig.get("neverTranslateLangs").indexOf(tabLanguage) === -1 &&
+      FTConfig.get("neverTranslateSites").indexOf(tabHostName) === -1 &&
+      FTConfig.get("targetLanguage") !== tabLanguage
     ) {
       showPopup();
-    } else if (twpConfig.get("whenShowMobilePopup") === "always-show") {
+    } else if (FTConfig.get("whenShowMobilePopup") === "always-show") {
       showPopup();
     }
   });
@@ -654,12 +654,12 @@ void (async function () {
   // dark/light mode
   function updateTheme() {
     let darkMode = false;
-    if (twpConfig.get("darkMode") === "auto") {
+    if (FTConfig.get("darkMode") === "auto") {
       darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? true
         : false;
     } else {
-      darkMode = twpConfig.get("darkMode") === "yes" ? true : false;
+      darkMode = FTConfig.get("darkMode") === "yes" ? true : false;
     }
 
     if (darkMode) {
@@ -690,7 +690,7 @@ void (async function () {
     updateTheme();
   });
 
-  twpConfig.onChanged((name, newValue) => {
+  FTConfig.onChanged((name, newValue) => {
     if (name == "darkMode") {
       updateTheme();
     }

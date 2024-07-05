@@ -7,8 +7,8 @@ $("#btnClose").addEventListener("click", () => {
 });
 
 $("#btnApply").addEventListener("click", () => {
-  twpConfig.setTargetLanguage($("#selectTargetLanguage").value, true);
-  // twpConfig.set("dontSortResults", $("#dontSortResults").value);
+  FTConfig.setTargetLanguage($("#selectTargetLanguage").value, true);
+  // FTConfig.set("dontSortResults", $("#dontSortResults").value);
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(
@@ -28,14 +28,14 @@ $("#btnApply").addEventListener("click", () => {
   });
 });
 
-twpConfig
+FTConfig
   .onReady()
-  .then(() => twpI18n.updateUiMessages())
+  .then(() => FTI18n.updateUiMessages())
   .then(() => {
-    twpI18n.translateDocument();
+    FTI18n.translateDocument();
 
-    $("#pageTranslatorService").value = twpConfig.get("pageTranslatorService");
-    $("#dontSortResults").value = twpConfig.get("dontSortResults");
+    $("#pageTranslatorService").value = FTConfig.get("pageTranslatorService");
+    $("#dontSortResults").value = FTConfig.get("dontSortResults");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(
         tabs[0].id,
@@ -68,7 +68,7 @@ twpConfig
       );
     });
 
-    let langs = twpLang.getLanguageList();
+    let langs = FTLang.getLanguageList();
 
     const langsSorted = [];
 
@@ -98,13 +98,13 @@ twpConfig
 
     const eRecentsLangs =
       selectTargetLanguage.querySelector('[name="targets"]');
-    for (const value of twpConfig.get("targetLanguages")) {
+    for (const value of FTConfig.get("targetLanguages")) {
       const option = document.createElement("option");
       option.value = value;
       option.textContent = langs[value];
       eRecentsLangs.appendChild(option);
     }
-    selectTargetLanguage.value = twpConfig.get("targetLanguages")[0];
+    selectTargetLanguage.value = FTConfig.get("targetLanguages")[0];
 
     function disableDarkMode() {
       if (!$("#lightModeElement")) {
@@ -140,7 +140,7 @@ twpConfig
       }
     }
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches) {
           enableDarkMode();

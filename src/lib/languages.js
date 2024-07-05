@@ -1,6 +1,6 @@
 "use strict";
 
-const twpLang = (function () {
+const FTLang = (function () {
   const allLanguagesNames = {
     af: {
       af: "Afrikaans",
@@ -7097,9 +7097,9 @@ const twpLang = (function () {
     },
   };
 
-  const twpLang = {};
+  const FTLang = {};
 
-  twpLang.SupportedLanguages = {
+  FTLang.SupportedLanguages = {
     google: [
       "af",
       "sq",
@@ -7547,19 +7547,19 @@ const twpLang = (function () {
     ],
   };
 
-  twpLang.UILanguages = Object.keys(allLanguagesNames);
-  twpLang.TargetLanguages = Object.keys(allLanguagesNames["en"]);
+  FTLang.UILanguages = Object.keys(allLanguagesNames);
+  FTLang.TargetLanguages = Object.keys(allLanguagesNames["en"]);
 
   /**
    * get the list of localized languages for the current browser language
    * @returns {string[]} languageList
    */
-  twpLang.getLanguageList = function () {
+  FTLang.getLanguageList = function () {
     let uiLanguage =
-      twpConfig.get("uiLanguage") !== "default"
-        ? twpConfig.get("uiLanguage")
+      FTConfig.get("uiLanguage") !== "default"
+        ? FTConfig.get("uiLanguage")
         : chrome.i18n.getUILanguage();
-    uiLanguage = twpLang.fixUILanguageCode(uiLanguage) || "en";
+    uiLanguage = FTLang.fixUILanguageCode(uiLanguage) || "en";
     return allLanguagesNames[uiLanguage];
   };
 
@@ -7573,28 +7573,28 @@ const twpLang = (function () {
    * @param {boolean} forPageTranslation
    * @returns {string} alternativeServiceName
    */
-  twpLang.getAlternativeService = function getAlternativeService(
+  FTLang.getAlternativeService = function getAlternativeService(
     lang,
     serviceName,
     forPageTranslation = false
   ) {
-    lang = twpLang.fixTLanguageCode(lang);
-    if (!twpLang.SupportedLanguages[serviceName]) return null;
+    lang = FTLang.fixTLanguageCode(lang);
+    if (!FTLang.SupportedLanguages[serviceName]) return null;
     if (
       forPageTranslation &&
       pageTranslationServices.indexOf(serviceName) === -1
     )
       return null;
-    if (twpLang.SupportedLanguages[serviceName].indexOf(lang) !== -1)
+    if (FTLang.SupportedLanguages[serviceName].indexOf(lang) !== -1)
       return serviceName;
 
-    if (twpConfig.get("useAlternativeService") !== "yes") return null;
+    if (FTConfig.get("useAlternativeService") !== "yes") return null;
 
-    for (const sn in twpLang.SupportedLanguages) {
+    for (const sn in FTLang.SupportedLanguages) {
       if (sn === serviceName) continue;
       if (forPageTranslation && pageTranslationServices.indexOf(sn) === -1)
         continue;
-      const langs = twpLang.SupportedLanguages[sn];
+      const langs = FTLang.SupportedLanguages[sn];
       if (langs.indexOf(lang) !== -1) {
         alternatives.set(lang, sn);
         return sn;
@@ -7606,20 +7606,20 @@ const twpLang = (function () {
   /**
    * convert langCode to languageName
    * @example
-   * twpLang.codeToLanguage("de")
+   * FTLang.codeToLanguage("de")
    * // returns "German"
-   * twpLang.codeToLanguage("und")
-   * // returns "Unknown" -- twpI18n.getMessage("msgUnknownLanguage")
+   * FTLang.codeToLanguage("und")
+   * // returns "Unknown" -- FTI18n.getMessage("msgUnknownLanguage")
    * @param {string} langCode
    * @returns {string} languageName
    */
-  twpLang.codeToLanguage = function (langCode) {
+  FTLang.codeToLanguage = function (langCode) {
     if (langCode === "und") {
-      return twpI18n.getMessage("msgUnknownLanguage");
+      return FTI18n.getMessage("msgUnknownLanguage");
     }
 
-    const languageList = twpLang.getLanguageList();
-    langCode = twpLang.fixTLanguageCode(langCode);
+    const languageList = FTLang.getLanguageList();
+    langCode = FTLang.fixTLanguageCode(langCode);
 
     return langCode ? languageList[langCode] : "";
   };
@@ -7629,7 +7629,7 @@ const twpLang = (function () {
    * @param {string} langCode
    * @returns {string} langCode
    */
-  twpLang.fixUILanguageCode = function (langCode) {
+  FTLang.fixUILanguageCode = function (langCode) {
     if (typeof langCode !== "string") return;
 
     function getReplacer(langCode) {
@@ -7643,10 +7643,10 @@ const twpLang = (function () {
       }
     }
 
-    if (twpLang.UILanguages.indexOf(langCode) === -1) {
+    if (FTLang.UILanguages.indexOf(langCode) === -1) {
       if (langCode.indexOf("-") !== -1) {
         langCode = langCode.split("-")[0];
-        if (twpLang.UILanguages.indexOf(langCode) === -1) {
+        if (FTLang.UILanguages.indexOf(langCode) === -1) {
           return getReplacer(langCode);
         }
       } else {
@@ -7662,7 +7662,7 @@ const twpLang = (function () {
    * @param {string} langCode
    * @returns {string} langCode
    */
-  twpLang.fixTLanguageCode = function (langCode) {
+  FTLang.fixTLanguageCode = function (langCode) {
     if (typeof langCode !== "string") return;
 
     if (langCode === "zh") {
@@ -7675,10 +7675,10 @@ const twpLang = (function () {
       return "jv";
     }
 
-    if (twpLang.TargetLanguages.indexOf(langCode) === -1) {
+    if (FTLang.TargetLanguages.indexOf(langCode) === -1) {
       if (langCode.indexOf("-") !== -1) {
         langCode = langCode.split("-")[0];
-        if (twpLang.TargetLanguages.indexOf(langCode) === -1) {
+        if (FTLang.TargetLanguages.indexOf(langCode) === -1) {
           return;
         }
       } else {
@@ -7692,14 +7692,14 @@ const twpLang = (function () {
   /**
    * check if langCode is RTL
    * @example
-   * twpLang.isRtlLanguage("ar")
+   * FTLang.isRtlLanguage("ar")
    * // returns true
-   * twpLang.isRtlLanguage("en")
+   * FTLang.isRtlLanguage("en")
    * // returns false
    * @param {string} langCode
    * @returns {boolean} isRTL
    */
-  twpLang.isRtlLanguage = function (langCode) {
+  FTLang.isRtlLanguage = function (langCode) {
     const rtl_langs = [
       "ar",
       "ckb",
@@ -7717,5 +7717,5 @@ const twpLang = (function () {
     return rtl_langs.indexOf(langCode) !== -1;
   };
 
-  return twpLang;
+  return FTLang;
 })();

@@ -2,7 +2,7 @@
 
 var showOriginal = {};
 
-twpConfig.onReady(function () {
+FTConfig.onReady(function () {
   if (platformInfo.isMobile.any) {
     showOriginal.enable = () => {};
     showOriginal.disable = () => {};
@@ -24,11 +24,11 @@ twpConfig.onReady(function () {
     .then((response) => (styleTextContent = response))
     .catch((e) => console.error(e));
 
-  let showOriginalTextWhenHovering = twpConfig.get(
+  let showOriginalTextWhenHovering = FTConfig.get(
     "showOriginalTextWhenHovering"
   );
   showOriginal.isEnabled = showOriginalTextWhenHovering === "yes";
-  twpConfig.onChanged(function (name, newValue) {
+  FTConfig.onChanged(function (name, newValue) {
     if (name === "showOriginalTextWhenHovering") {
       showOriginalTextWhenHovering = newValue;
       showOriginal.isEnabled = showOriginalTextWhenHovering === "yes";
@@ -196,7 +196,7 @@ twpConfig.onReady(function () {
       }
     }
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches) {
           enableDarkMode();

@@ -2,18 +2,18 @@
 
 var $ = document.querySelector.bind(document);
 
-twpConfig
+FTConfig
   .onReady()
-  .then(() => twpI18n.updateUiMessages())
+  .then(() => FTI18n.updateUiMessages())
   .then(() => {
-    twpI18n.translateDocument();
+    FTI18n.translateDocument();
     const popupSectionCount = 6;
 
     $("#btnImproveTranslation").onclick = () => {
       window.location = "improve-translation.html";
     };
 
-    let popupPanelSection = twpConfig.get("popupPanelSection");
+    let popupPanelSection = FTConfig.get("popupPanelSection");
 
     function updatePopupSection() {
       document.querySelectorAll("[data-popupPanelSection]").forEach((node) => {
@@ -58,20 +58,20 @@ twpConfig
         popupPanelSection++;
         updatePopupSection();
       }
-      twpConfig.set("popupPanelSection", popupPanelSection);
+      FTConfig.set("popupPanelSection", popupPanelSection);
     };
     $("#less").onclick = (e) => {
       if (popupPanelSection > 0) {
         popupPanelSection--;
         updatePopupSection();
       }
-      twpConfig.set("popupPanelSection", popupPanelSection);
+      FTConfig.set("popupPanelSection", popupPanelSection);
     };
 
     let originalTabLanguage = "und";
     let currentPageLanguage = "und";
     let currentPageLanguageState = "original";
-    let currentPageTranslatorService = twpConfig.get("pageTranslatorService");
+    let currentPageTranslatorService = FTConfig.get("pageTranslatorService");
 
     function translateOrRestorePagePage(newTargetLanguage) {
       const _translateOrRestorePagePage = (newTargetLanguage) => {
@@ -80,7 +80,7 @@ twpConfig
           currentPageLanguageState = "original";
         } else {
           currentPageLanguageState = "translated";
-          twpConfig.setTargetLanguage(newTargetLanguage);
+          FTConfig.setTargetLanguage(newTargetLanguage);
         }
 
         chrome.tabs.query(
@@ -89,7 +89,7 @@ twpConfig
             currentWindow: true,
           },
           (tabs) => {
-            if (twpConfig.get("enableIframePageTranslation") === "yes") {
+            if (FTConfig.get("enableIframePageTranslation") === "yes") {
               chrome.tabs.sendMessage(
                 tabs[0].id,
                 {
@@ -144,20 +144,20 @@ twpConfig
       }
     }
 
-    const twpButtons = document.querySelectorAll("button");
+    const FTButtons = document.querySelectorAll("button");
 
-    twpButtons.forEach((button) => {
+    FTButtons.forEach((button) => {
       button.addEventListener("click", (event) => {
         const newTargetLanguage = event.target.value;
         translateOrRestorePagePage(newTargetLanguage);
       });
     });
 
-    let targetLanguages = twpConfig.get("targetLanguages");
+    let targetLanguages = FTConfig.get("targetLanguages");
     for (let i = 1; i < 4; i++) {
-      const button = twpButtons[i];
+      const button = FTButtons[i];
       button.value = targetLanguages[i - 1];
-      button.textContent = twpLang.codeToLanguage(targetLanguages[i - 1]);
+      button.textContent = FTLang.codeToLanguage(targetLanguages[i - 1]);
     }
 
     chrome.tabs.query(
@@ -178,11 +178,11 @@ twpConfig
             checkedLastError();
             if (
               !tabLanguage ||
-              (tabLanguage = twpLang.fixTLanguageCode(tabLanguage))
+              (tabLanguage = FTLang.fixTLanguageCode(tabLanguage))
             ) {
               originalTabLanguage = tabLanguage || "und";
-              twpButtons[0].childNodes[1].textContent =
-                twpLang.codeToLanguage(originalTabLanguage);
+              FTButtons[0].childNodes[1].textContent =
+                FTLang.codeToLanguage(originalTabLanguage);
             }
           }
         );
@@ -243,26 +243,26 @@ twpConfig
     function updateInterface() {
       if (currentPageTranslatorService == "yandex") {
         $("#btnOptions option[value='translateInExternalSite']").textContent =
-          twpI18n.getMessage("msgOpenOnYandexTranslator");
+          FTI18n.getMessage("msgOpenOnYandexTranslator");
         $("#iconTranslate").setAttribute(
           "src",
           "/icons/yandex-translate-32.png"
         );
       } else if (currentPageTranslatorService == "bing") {
         $("#btnOptions option[value='translateInExternalSite']").textContent =
-          twpI18n.getMessage("btnOpenOnGoogleTranslate");
+          FTI18n.getMessage("btnOpenOnGoogleTranslate");
         $("#iconTranslate").setAttribute("src", "/icons/bing-translate-32.png");
       } else {
         // google
         $("#btnOptions option[value='translateInExternalSite']").textContent =
-          twpI18n.getMessage("btnOpenOnGoogleTranslate");
+          FTI18n.getMessage("btnOpenOnGoogleTranslate");
         $("#iconTranslate").setAttribute(
           "src",
           "/icons/google-translate-32.png"
         );
       }
 
-      twpButtons.forEach((button) => {
+      FTButtons.forEach((button) => {
         button.classList.remove("w3-buttonSelected");
         if (
           (currentPageLanguageState !== "translated" &&
@@ -276,20 +276,20 @@ twpConfig
 
       if (originalTabLanguage !== "und") {
         $("#cbAlwaysTranslateThisLang").checked =
-          twpConfig.get("alwaysTranslateLangs").indexOf(originalTabLanguage) !==
+          FTConfig.get("alwaysTranslateLangs").indexOf(originalTabLanguage) !==
           -1;
-        $("#lblAlwaysTranslateThisLang").textContent = twpI18n.getMessage(
+        $("#lblAlwaysTranslateThisLang").textContent = FTI18n.getMessage(
           "lblAlwaysTranslate",
-          twpLang.codeToLanguage(originalTabLanguage)
+          FTLang.codeToLanguage(originalTabLanguage)
         );
         $("#cbAlwaysTranslateThisLang").removeAttribute("disabled");
 
-        const translatedWhenHoveringThisLangText = twpI18n.getMessage(
+        const translatedWhenHoveringThisLangText = FTI18n.getMessage(
           "lblShowTranslatedWhenHoveringThisLang",
-          twpLang.codeToLanguage(originalTabLanguage)
+          FTLang.codeToLanguage(originalTabLanguage)
         );
         $("#cbShowTranslatedWhenHoveringThisLang").checked =
-          twpConfig
+          FTConfig
             .get("langsToTranslateWhenHovering")
             .indexOf(originalTabLanguage) !== -1;
         $("#lblShowTranslatedWhenHoveringThisLang").textContent =
@@ -297,7 +297,7 @@ twpConfig
         $("#cbShowTranslatedWhenHoveringThisLang").removeAttribute("disabled");
 
         if (
-          twpConfig
+          FTConfig
             .get("langsToTranslateWhenHovering")
             .indexOf(originalTabLanguage) === -1
         ) {
@@ -313,11 +313,11 @@ twpConfig
           "option[data-i18n=lblShowTranslatedWhenHoveringThisLang]"
         ).removeAttribute("hidden");
 
-        const neverTranslateLangText = twpI18n.getMessage(
+        const neverTranslateLangText = FTI18n.getMessage(
           "btnNeverTranslateThisLanguage"
         );
         if (
-          twpConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) ===
+          FTConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) ===
           -1
         ) {
           $("option[data-i18n=btnNeverTranslateThisLanguage]").textContent =
@@ -388,7 +388,7 @@ twpConfig
       }
     }
 
-    switch (twpConfig.get("darkMode")) {
+    switch (FTConfig.get("darkMode")) {
       case "auto":
         if (matchMedia("(prefers-color-scheme: dark)").matches) {
           enableDarkMode();
@@ -411,12 +411,12 @@ twpConfig
     };
 
     $("#btnSwitchInterfaces").addEventListener("click", () => {
-      twpConfig.set("useOldPopup", "yes");
+      FTConfig.set("useOldPopup", "yes");
       window.location = "old-popup.html";
     });
 
     $("#divIconTranslate").addEventListener("click", () => {
-      currentPageTranslatorService = twpConfig.swapPageTranslationService();
+      currentPageTranslatorService = FTConfig.swapPageTranslationService();
 
       chrome.tabs.query(
         {
@@ -447,36 +447,36 @@ twpConfig
         $("#cbAlwaysTranslateThisLang").addEventListener("change", (e) => {
           const hostname = new URL(tabs[0].url).hostname;
           if (e.target.checked) {
-            twpConfig.addLangToAlwaysTranslate(originalTabLanguage, hostname);
+            FTConfig.addLangToAlwaysTranslate(originalTabLanguage, hostname);
             translateOrRestorePagePage();
           } else {
-            twpConfig.removeLangFromAlwaysTranslate(originalTabLanguage);
+            FTConfig.removeLangFromAlwaysTranslate(originalTabLanguage);
           }
         });
 
         $("#cbAlwaysTranslateThisSite").addEventListener("change", (e) => {
           const hostname = new URL(tabs[0].url).hostname;
           if (e.target.checked) {
-            twpConfig.addSiteToAlwaysTranslate(hostname);
+            FTConfig.addSiteToAlwaysTranslate(hostname);
             translateOrRestorePagePage();
           } else {
-            twpConfig.removeSiteFromAlwaysTranslate(hostname);
+            FTConfig.removeSiteFromAlwaysTranslate(hostname);
           }
         });
 
         $("#cbShowTranslateSelectedButton").addEventListener("change", (e) => {
           if (e.target.checked) {
-            twpConfig.set("showTranslateSelectedButton", "yes");
+            FTConfig.set("showTranslateSelectedButton", "yes");
           } else {
-            twpConfig.set("showTranslateSelectedButton", "no");
+            FTConfig.set("showTranslateSelectedButton", "no");
           }
         });
 
         $("#cbShowOriginalWhenHovering").addEventListener("change", (e) => {
           if (e.target.checked) {
-            twpConfig.set("showOriginalTextWhenHovering", "yes");
+            FTConfig.set("showOriginalTextWhenHovering", "yes");
           } else {
-            twpConfig.set("showOriginalTextWhenHovering", "no");
+            FTConfig.set("showOriginalTextWhenHovering", "no");
           }
         });
 
@@ -485,9 +485,9 @@ twpConfig
           (e) => {
             const hostname = new URL(tabs[0].url).hostname;
             if (e.target.checked) {
-              twpConfig.addSiteToTranslateWhenHovering(hostname);
+              FTConfig.addSiteToTranslateWhenHovering(hostname);
             } else {
-              twpConfig.removeSiteFromTranslateWhenHovering(hostname);
+              FTConfig.removeSiteFromTranslateWhenHovering(hostname);
             }
           }
         );
@@ -496,9 +496,9 @@ twpConfig
           "change",
           (e) => {
             if (e.target.checked) {
-              twpConfig.addLangToTranslateWhenHovering(originalTabLanguage);
+              FTConfig.addLangToTranslateWhenHovering(originalTabLanguage);
             } else {
-              twpConfig.removeLangFromTranslateWhenHovering(
+              FTConfig.removeLangFromTranslateWhenHovering(
                 originalTabLanguage
               );
             }
@@ -506,20 +506,20 @@ twpConfig
         );
 
         $("#cbShowTranslateSelectedButton").checked =
-          twpConfig.get("showTranslateSelectedButton") == "yes" ? true : false;
+          FTConfig.get("showTranslateSelectedButton") == "yes" ? true : false;
         $("#cbShowOriginalWhenHovering").checked =
-          twpConfig.get("showOriginalTextWhenHovering") == "yes" ? true : false;
+          FTConfig.get("showOriginalTextWhenHovering") == "yes" ? true : false;
 
         const hostname = new URL(tabs[0].url).hostname;
         $("#cbAlwaysTranslateThisSite").checked =
-          twpConfig.get("alwaysTranslateSites").indexOf(hostname) !== -1;
+          FTConfig.get("alwaysTranslateSites").indexOf(hostname) !== -1;
         $("#cbShowTranslatedWhenHoveringThisSite").checked =
-          twpConfig.get("sitesToTranslateWhenHovering").indexOf(hostname) !==
+          FTConfig.get("sitesToTranslateWhenHovering").indexOf(hostname) !==
           -1;
 
         {
-          const text = twpI18n.getMessage("lblShowTranslateSelectedButton");
-          if (twpConfig.get("showTranslateSelectedButton") !== "yes") {
+          const text = FTI18n.getMessage("lblShowTranslateSelectedButton");
+          if (FTConfig.get("showTranslateSelectedButton") !== "yes") {
             $("option[data-i18n=lblShowTranslateSelectedButton]").textContent =
               text;
           } else {
@@ -528,8 +528,8 @@ twpConfig
           }
         }
         {
-          const text = twpI18n.getMessage("lblShowOriginalTextWhenHovering");
-          if (twpConfig.get("showOriginalTextWhenHovering") !== "yes") {
+          const text = FTI18n.getMessage("lblShowOriginalTextWhenHovering");
+          if (FTConfig.get("showOriginalTextWhenHovering") !== "yes") {
             $("option[data-i18n=lblShowOriginalTextWhenHovering]").textContent =
               text;
           } else {
@@ -538,11 +538,11 @@ twpConfig
           }
         }
         {
-          const text = twpI18n.getMessage(
+          const text = FTI18n.getMessage(
             "lblShowTranslatedWhenHoveringThisSite"
           );
           if (
-            twpConfig.get("sitesToTranslateWhenHovering").indexOf(hostname) ===
+            FTConfig.get("sitesToTranslateWhenHovering").indexOf(hostname) ===
             -1
           ) {
             $(
@@ -575,93 +575,93 @@ twpConfig
               break;
             case "alwaysTranslateThisSite":
               if (
-                twpConfig.get("alwaysTranslateSites").indexOf(hostname) === -1
+                FTConfig.get("alwaysTranslateSites").indexOf(hostname) === -1
               ) {
-                twpConfig.addSiteToAlwaysTranslate(hostname);
+                FTConfig.addSiteToAlwaysTranslate(hostname);
               } else {
-                twpConfig.removeSiteFromAlwaysTranslate(hostname);
+                FTConfig.removeSiteFromAlwaysTranslate(hostname);
               }
               window.close();
               break;
             case "neverTranslateThisSite":
               if (
-                twpConfig.get("neverTranslateSites").indexOf(hostname) === -1
+                FTConfig.get("neverTranslateSites").indexOf(hostname) === -1
               ) {
-                twpConfig.addSiteToNeverTranslate(hostname);
+                FTConfig.addSiteToNeverTranslate(hostname);
                 translateOrRestorePagePage("original");
               } else {
-                twpConfig.removeSiteFromNeverTranslate(hostname);
+                FTConfig.removeSiteFromNeverTranslate(hostname);
               }
               window.close();
               break;
             case "alwaysTranslateThisLanguage":
               if (
-                twpConfig
+                FTConfig
                   .get("alwaysTranslateLangs")
                   .indexOf(originalTabLanguage) === -1
               ) {
-                twpConfig.addLangToAlwaysTranslate(
+                FTConfig.addLangToAlwaysTranslate(
                   originalTabLanguage,
                   hostname
                 );
               } else {
-                twpConfig.removeLangFromAlwaysTranslate(originalTabLanguage);
+                FTConfig.removeLangFromAlwaysTranslate(originalTabLanguage);
               }
               window.close();
               break;
             case "neverTranslateThisLanguage":
               if (
-                twpConfig
+                FTConfig
                   .get("neverTranslateLangs")
                   .indexOf(originalTabLanguage) === -1
               ) {
-                twpConfig.addLangToNeverTranslate(
+                FTConfig.addLangToNeverTranslate(
                   originalTabLanguage,
                   hostname
                 );
                 translateOrRestorePagePage("original");
               } else {
-                twpConfig.removeLangFromNeverTranslate(originalTabLanguage);
+                FTConfig.removeLangFromNeverTranslate(originalTabLanguage);
               }
               window.close();
               break;
             case "showTranslateSelectedButton":
-              if (twpConfig.get("showTranslateSelectedButton") === "yes") {
-                twpConfig.set("showTranslateSelectedButton", "no");
+              if (FTConfig.get("showTranslateSelectedButton") === "yes") {
+                FTConfig.set("showTranslateSelectedButton", "no");
               } else {
-                twpConfig.set("showTranslateSelectedButton", "yes");
+                FTConfig.set("showTranslateSelectedButton", "yes");
               }
               window.close();
               break;
             case "showOriginalTextWhenHovering":
-              if (twpConfig.get("showOriginalTextWhenHovering") === "yes") {
-                twpConfig.set("showOriginalTextWhenHovering", "no");
+              if (FTConfig.get("showOriginalTextWhenHovering") === "yes") {
+                FTConfig.set("showOriginalTextWhenHovering", "no");
               } else {
-                twpConfig.set("showOriginalTextWhenHovering", "yes");
+                FTConfig.set("showOriginalTextWhenHovering", "yes");
               }
               window.close();
               break;
             case "showTranslatedWhenHoveringThisSite":
               if (
-                twpConfig
+                FTConfig
                   .get("sitesToTranslateWhenHovering")
                   .indexOf(hostname) === -1
               ) {
-                twpConfig.addSiteToTranslateWhenHovering(hostname);
+                FTConfig.addSiteToTranslateWhenHovering(hostname);
               } else {
-                twpConfig.removeSiteFromTranslateWhenHovering(hostname);
+                FTConfig.removeSiteFromTranslateWhenHovering(hostname);
               }
               window.close();
               break;
             case "showTranslatedWhenHoveringThisLang":
               if (
-                twpConfig
+                FTConfig
                   .get("langsToTranslateWhenHovering")
                   .indexOf(originalTabLanguage) === -1
               ) {
-                twpConfig.addLangToTranslateWhenHovering(originalTabLanguage);
+                FTConfig.addLangToTranslateWhenHovering(originalTabLanguage);
               } else {
-                twpConfig.removeLangFromTranslateWhenHovering(
+                FTConfig.removeLangFromTranslateWhenHovering(
                   originalTabLanguage
                 );
               }
@@ -678,12 +678,12 @@ twpConfig
                     tabsCreate(
                       `https://translate.yandex.com/translate?view=compact&url=${encodeURIComponent(
                         tabs[0].url
-                      )}&lang=${twpConfig.get("targetLanguage").split("-")[0]}`
+                      )}&lang=${FTConfig.get("targetLanguage").split("-")[0]}`
                     );
                   } else {
                     // google
                     tabsCreate(
-                      `https://translate.google.com/translate?tl=${twpConfig.get(
+                      `https://translate.google.com/translate?tl=${FTConfig.get(
                         "targetLanguage"
                       )}&u=${encodeURIComponent(tabs[0].url)}`
                     );
@@ -717,16 +717,16 @@ twpConfig
       },
       (tabs) => {
         const hostname = new URL(tabs[0].url).hostname;
-        const textNever = twpI18n.getMessage("btnNeverTranslate");
-        if (twpConfig.get("neverTranslateSites").indexOf(hostname) === -1) {
+        const textNever = FTI18n.getMessage("btnNeverTranslate");
+        if (FTConfig.get("neverTranslateSites").indexOf(hostname) === -1) {
           $("option[data-i18n=btnNeverTranslate]").textContent = textNever;
         } else {
           $("option[data-i18n=btnNeverTranslate]").textContent =
             "✔ " + textNever;
         }
 
-        const textAlways = twpI18n.getMessage("btnAlwaysTranslate");
-        if (twpConfig.get("alwaysTranslateSites").indexOf(hostname) === -1) {
+        const textAlways = FTI18n.getMessage("btnAlwaysTranslate");
+        if (FTConfig.get("alwaysTranslateSites").indexOf(hostname) === -1) {
           $("option[data-i18n=btnAlwaysTranslate]").textContent = textAlways;
         } else {
           $("option[data-i18n=btnAlwaysTranslate]").textContent =

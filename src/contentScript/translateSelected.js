@@ -15,7 +15,7 @@ function getTabHostName() {
   );
 }
 
-Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
+Promise.all([FTConfig.onReady(), getTabHostName()]).then(function (_) {
   const tabHostName = _[1];
 
   let gSelectionInfo;
@@ -29,29 +29,29 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   let origTextContainer;
 
   let originalTabLanguage = "und";
-  let currentTargetLanguages = twpConfig.get("targetLanguages");
-  let currentTargetLanguage = twpConfig.get("targetLanguageTextTranslation");
-  let currentTextTranslatorService = twpConfig.get("textTranslatorService");
+  let currentTargetLanguages = FTConfig.get("targetLanguages");
+  let currentTargetLanguage = FTConfig.get("targetLanguageTextTranslation");
+  let currentTextTranslatorService = FTConfig.get("textTranslatorService");
   let awaysTranslateThisSite =
-    twpConfig.get("alwaysTranslateSites").indexOf(tabHostName) !== -1;
+    FTConfig.get("alwaysTranslateSites").indexOf(tabHostName) !== -1;
   let translateThisSite =
-    twpConfig.get("neverTranslateSites").indexOf(tabHostName) === -1;
+    FTConfig.get("neverTranslateSites").indexOf(tabHostName) === -1;
   let translateThisLanguage =
-    twpConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) === -1;
-  let showTranslateSelectedButton = twpConfig.get(
+    FTConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) === -1;
+  let showTranslateSelectedButton = FTConfig.get(
     "showTranslateSelectedButton"
   );
-  let dontShowIfIsNotValidText = twpConfig.get("dontShowIfIsNotValidText");
-  let dontShowIfPageLangIsTargetLang = twpConfig.get(
+  let dontShowIfIsNotValidText = FTConfig.get("dontShowIfIsNotValidText");
+  let dontShowIfPageLangIsTargetLang = FTConfig.get(
     "dontShowIfPageLangIsTargetLang"
   );
-  let dontShowIfPageLangIsUnknown = twpConfig.get(
+  let dontShowIfPageLangIsUnknown = FTConfig.get(
     "dontShowIfPageLangIsUnknown"
   );
-  let dontShowIfSelectedTextIsTargetLang = twpConfig.get(
+  let dontShowIfSelectedTextIsTargetLang = FTConfig.get(
     "dontShowIfSelectedTextIsTargetLang"
   );
-  let dontShowIfSelectedTextIsUnknown = twpConfig.get(
+  let dontShowIfSelectedTextIsUnknown = FTConfig.get(
     "dontShowIfSelectedTextIsUnknown"
   );
   let fooCount = 0;
@@ -59,7 +59,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
   pageTranslator.onGetOriginalTabLanguage(function (tabLanguage) {
     originalTabLanguage = tabLanguage;
     translateThisLanguage =
-      twpConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) === -1;
+      FTConfig.get("neverTranslateLangs").indexOf(originalTabLanguage) === -1;
     updateEventListener();
   });
 
@@ -71,7 +71,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
         if (!result) return resolve({ lang: "und", isReliable: false });
 
         for (const langInfo of result.languages) {
-          const langCode = twpLang.fixTLanguageCode(langInfo.language);
+          const langCode = FTLang.fixTLanguageCode(langInfo.language);
           if (langCode) {
             return resolve({ lang: langCode, isReliable: result.isReliable });
           }
@@ -329,7 +329,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       el.setAttribute("id", "backdropFilterElement");
       el.setAttribute("rel", "stylesheet");
       let darkMode = false;
-      switch (twpConfig.get("darkMode")) {
+      switch (FTConfig.get("darkMode")) {
         case "auto":
           if (matchMedia("(prefers-color-scheme: dark)").matches)
             darkMode = true;
@@ -460,8 +460,8 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     eOrigText.onkeyup = (e) => {
       e.stopPropagation();
 
-      if (twpConfig.get("translateSelectedWhenPressTwice") !== "yes") return;
-      // https://github.com/FilipePS/Traduzir-paginas-web/issues/577
+      if (FTConfig.get("translateSelectedWhenPressTwice") !== "yes") return;
+      // https://github.com/thinkingtime/fly-translation/issues/577
       if (isSelectingText()) {
         return onKeyUp(e);
       } else {
@@ -487,10 +487,10 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
 
     eMoreOrLess.onclick = () => {
-      if (twpConfig.get("expandPanelTranslateSelectedText") === "no") {
-        twpConfig.set("expandPanelTranslateSelectedText", "yes");
+      if (FTConfig.get("expandPanelTranslateSelectedText") === "no") {
+        FTConfig.set("expandPanelTranslateSelectedText", "yes");
       } else {
-        twpConfig.set("expandPanelTranslateSelectedText", "no");
+        FTConfig.set("expandPanelTranslateSelectedText", "no");
       }
 
       setCaretAtEnd();
@@ -498,7 +498,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
     sGoogle.onclick = () => {
       currentTextTranslatorService = "google";
-      twpConfig.set("textTranslatorService", "google");
+      FTConfig.set("textTranslatorService", "google");
       translateNewInput();
 
       sGoogle.classList.remove("selected");
@@ -511,7 +511,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sYandex.onclick = () => {
       currentTextTranslatorService = "yandex";
-      twpConfig.set("textTranslatorService", "yandex");
+      FTConfig.set("textTranslatorService", "yandex");
       translateNewInput();
 
       sGoogle.classList.remove("selected");
@@ -524,7 +524,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sBing.onclick = () => {
       currentTextTranslatorService = "bing";
-      twpConfig.set("textTranslatorService", "bing");
+      FTConfig.set("textTranslatorService", "bing");
       translateNewInput();
 
       sGoogle.classList.remove("selected");
@@ -537,13 +537,13 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sDeepL.onclick = () => {
       if (
-        twpConfig.get("deepl_confirmed") === "yes" ||
-        confirm(twpI18n.getMessage("msgSetDeepLAlert"))
+        FTConfig.get("deepl_confirmed") === "yes" ||
+        confirm(FTI18n.getMessage("msgSetDeepLAlert"))
       ) {
-        twpConfig.set("deepl_confirmed", "yes");
+        FTConfig.set("deepl_confirmed", "yes");
 
         currentTextTranslatorService = "deepl";
-        twpConfig.set("textTranslatorService", "deepl");
+        FTConfig.set("textTranslatorService", "deepl");
         translateNewInput();
 
         sGoogle.classList.remove("selected");
@@ -557,7 +557,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
     sLibre.onclick = () => {
       currentTextTranslatorService = "libre";
-      twpConfig.set("textTranslatorService", "libre");
+      FTConfig.set("textTranslatorService", "libre");
       translateNewInput();
 
       sGoogle.classList.remove("selected");
@@ -572,12 +572,12 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     const setTargetLanguage = shadowRoot.getElementById("setTargetLanguage");
     setTargetLanguage.onclick = (e) => {
       if (e.target.getAttribute("value")) {
-        const langCode = twpLang.fixTLanguageCode(
+        const langCode = FTLang.fixTLanguageCode(
           e.target.getAttribute("value")
         );
         if (langCode) {
           currentTargetLanguage = langCode;
-          twpConfig.setTargetLanguageTextTranslation(langCode);
+          FTConfig.setTargetLanguageTextTranslation(langCode);
           translateNewInput();
         }
 
@@ -590,8 +590,8 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     };
 
     function onListenClick(type, element, text, language) {
-      const msgListen = twpI18n.getMessage("btnListen");
-      const msgStopListening = twpI18n.getMessage("btnStopListening");
+      const msgListen = FTI18n.getMessage("btnListen");
+      const msgStopListening = FTI18n.getMessage("btnStopListening");
 
       eListenOriginal.classList.remove("selected");
       eListenTranslated.classList.remove("selected");
@@ -640,7 +640,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
 
     document.body.appendChild(divElement);
 
-    twpI18n.translateDocument(shadowRoot);
+    FTI18n.translateDocument(shadowRoot);
 
     if (platformInfo.isMobile.any) {
       eButtonTransSelText.style.width = "30px";
@@ -663,7 +663,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       targetLanguageButtons[i].setAttribute("value", currentTargetLanguages[i]);
       targetLanguageButtons[i].setAttribute(
         "title",
-        twpLang.codeToLanguage(currentTargetLanguages[i])
+        FTLang.codeToLanguage(currentTargetLanguages[i])
       );
     }
 
@@ -679,7 +679,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       sGoogle.classList.add("selected");
     }
 
-    const enabledServices = twpConfig.get("enabledServices");
+    const enabledServices = FTConfig.get("enabledServices");
     if (enabledServices.includes("google")) {
       sGoogle.removeAttribute("hidden");
     } else {
@@ -700,14 +700,14 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     } else {
       sDeepL.setAttribute("hidden", "");
     }
-    if (twpConfig.get("customServices").find((cs) => cs.name === "libre")) {
+    if (FTConfig.get("customServices").find((cs) => cs.name === "libre")) {
       sLibre.removeAttribute("hidden");
     } else {
       sLibre.setAttribute("hidden", "");
     }
 
     if (
-      twpConfig.get("expandPanelTranslateSelectedText") === "yes" ||
+      FTConfig.get("expandPanelTranslateSelectedText") === "yes" ||
       (prevSelectionInfo &&
         (prevSelectionInfo.isContentEditable ||
           prevSelectionInfo.isInputElement))
@@ -715,15 +715,15 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       origTextContainer.style.display = "block";
       eMore.style.display = "none";
       eLess.style.display = "block";
-      eMoreOrLess.setAttribute("title", twpI18n.getMessage("less"));
+      eMoreOrLess.setAttribute("title", FTI18n.getMessage("less"));
     } else {
       origTextContainer.style.display = "none";
       eMore.style.display = "block";
       eLess.style.display = "none";
-      eMoreOrLess.setAttribute("title", twpI18n.getMessage("more"));
+      eMoreOrLess.setAttribute("title", FTI18n.getMessage("more"));
     }
 
-    twpConfig.onChanged((name, newvalue) => {
+    FTConfig.onChanged((name, newvalue) => {
       switch (name) {
         case "enabledServices": {
           const enabledServices = newvalue;
@@ -763,7 +763,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
             origTextContainer.style.display = "block";
             eMore.style.display = "none";
             eLess.style.display = "block";
-            eMoreOrLess.setAttribute("title", twpI18n.getMessage("less"));
+            eMoreOrLess.setAttribute("title", FTI18n.getMessage("less"));
             eDivResult.style.top =
               parseInt(eDivResult.style.top) +
               (prevHeight - parseInt(getComputedStyle(eDivResult).height)) +
@@ -772,7 +772,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
             origTextContainer.style.display = "none";
             eMore.style.display = "block";
             eLess.style.display = "none";
-            eMoreOrLess.setAttribute("title", twpI18n.getMessage("more"));
+            eMoreOrLess.setAttribute("title", FTI18n.getMessage("more"));
             eDivResult.style.top =
               parseInt(eDivResult.style.top) +
               (prevHeight - parseInt(getComputedStyle(eDivResult).height)) +
@@ -808,7 +808,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
     }
   }
 
-  twpConfig.onChanged(function (name, newValue) {
+  FTConfig.onChanged(function (name, newValue) {
     switch (name) {
       case "textTranslatorService":
         currentTextTranslatorService = newValue;
@@ -864,7 +864,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       const eTop = prevSelectionInfo.bottom;
       const eLeft = prevSelectionInfo.left;
 
-      if (twpLang.isRtlLanguage(currentTargetLanguage)) {
+      if (FTLang.isRtlLanguage(currentTargetLanguage)) {
         eSelTextTrans.setAttribute("dir", "rtl");
       } else {
         eSelTextTrans.setAttribute("dir", "ltr");
@@ -1157,7 +1157,7 @@ Promise.all([twpConfig.onReady(), getTabHostName()]).then(function (_) {
       return;
     }
 
-    if (twpConfig.get("translateSelectedWhenPressTwice") !== "yes") return;
+    if (FTConfig.get("translateSelectedWhenPressTwice") !== "yes") return;
     if (e.key == "Control") {
       if (
         lastTimePressedCtrl &&
